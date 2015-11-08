@@ -25,6 +25,7 @@ public class AuthenticationSystem extends ViewableDigraph {
 	private void CoupledModelConstruct() {
 		// TODO Auto-generated method stub
 		addInport("in");
+		addInport("inServer");
 		addOutport("out");
 		
 		AuthenticationManager am = new AuthenticationManager();
@@ -39,16 +40,12 @@ public class AuthenticationSystem extends ViewableDigraph {
 		
 		addTestInput("start",new entity("20"));
 		
-		
 		addCoupling(this, "in", am, "in");
 		addCoupling(am, "out", afm, "in");
 		addCoupling(afm, "out", this, "out");
 		
 		addCoupling(am, "out", se, "in");
-		addCoupling(am, "out", ae, "in");
-		
-		
-		
+		addCoupling(am, "out", ae, "in");	
 	}
 	
 //	public void  Deltext(double e, message x){
@@ -63,7 +60,9 @@ public class AuthenticationSystem extends ViewableDigraph {
     public void layoutForSimView()
     {
         preferredSize = new Dimension(591, 332);
-        ((ViewableComponent)withName("Authentication Factor Manager")).setPreferredLocation(new Point(53, 189));
-        ((ViewableComponent)withName("Authentication Manager")).setPreferredLocation(new Point(30, 50));
+        ((ViewableComponent)withName("Authentication Manager")).setPreferredLocation(new Point(20, 42));
+        ((ViewableComponent)withName("Authentication Factor Manager")).setPreferredLocation(new Point(26, 206));
+        ((ViewableComponent)withName("Asymm Encryption")).setPreferredLocation(new Point(292, 122));
+        ((ViewableComponent)withName("Symmetric Encryption")).setPreferredLocation(new Point(281, 30));
     }
 }
