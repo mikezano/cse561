@@ -14,6 +14,9 @@ public class Application extends ViewableAtomic {
 		super("Application");
 		addInport("in");
 		addOutport("out");
+		addOutport("SecurityLevel");
+		addOutport("ApplicationName");
+		addOutport("PayloadSize");
 	}
 
 	public Application(String name){
