@@ -32,11 +32,13 @@ public class SimulationSystem extends ViewableDigraph {
 
 		add(a);
 		add(as);
-
 		
 		addTestInput("start",new entity("20"));
 		
 		addCoupling(a, "out", as, "in");
+		addCoupling(a, "SecurityLevel", as, "SecurityLevel");
+		addCoupling(a, "ApplicationName", as, "ApplicationName");
+		addCoupling(a, "PayloadSize", as, "PayloadSize");
 	
 	}
 	

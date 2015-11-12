@@ -1,4 +1,5 @@
 package cse561;
+import GenCol.doubleEnt;
 import GenCol.entity;
 import model.modeling.content;
 import model.modeling.message;
@@ -26,6 +27,7 @@ public class Application extends ViewableAtomic {
 	public void initialize(){
 		passivate();
 		super.initialize();
+		holdIn("active", 0); //immediately trigger delta internal, and output
 	}
 	
 	public void deltext(double e,message x){
@@ -47,8 +49,12 @@ public class Application extends ViewableAtomic {
 	
 	public message out( ){
 		message m = new message();
-		content con = makeContent("out", new entity("out"));
-		m.add(con);
+		content securityLevel = makeContent("SecurityLevel", new doubleEnt(1));
+		content applicationName = makeContent("ApplicationName", new entity("XYZ"));
+		content payloadSize = makeContent("PayloadSize", new doubleEnt(3));
+		m.add(securityLevel);
+		m.add(applicationName);
+		m.add(payloadSize);
 		return m;
 	}
 } 

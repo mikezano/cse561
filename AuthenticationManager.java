@@ -12,6 +12,9 @@ public class AuthenticationManager extends ViewableAtomic {
  
 	public AuthenticationManager(){
 		super("Authentication Manager");
+		addInport("SecurityLevel");
+		addInport("ApplicationName");
+		addInport("PayloadSize");
 		addInport("in");
 		addOutport("out");
 	}
