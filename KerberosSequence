@@ -5,8 +5,6 @@ participant SymmCrypto as s
 participant KDC as k
 participant Recipient as r 
 
-
-
 'TGT: Ticket Granting Ticket
 '	  TGT contains the session key, expiration date and user's IP address. 
 '     The TGT encrypts the information mentioned. It's encrypted with the KDC's master key
