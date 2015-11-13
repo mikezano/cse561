@@ -15,8 +15,13 @@ Operate: Outputs:\n  PowerConsumed\n  OutputSizeInBytes\n  EcnryptedPayload
 Title AuthenticationManager
 [*] --down> Idle
 
-Idle --> InitKdcSession: ApplicationName 
+Idle --> InitKdcSession: ApplicationName\nSecurityLevel(1)\nDestinationName 
 Idle: N/A
+
+Idle -right-> AuthenticateUser: ApplicationName\nSecurityLevel(2)\nDestinationName
+AuthenticateUser: AuthenticationType
+
+AuthenticateUser --> InitKdcSession: AuthenticationResult
 
 
 InitKdcSession: Outputs:\n  Key\n  Payload\n  PayloadSizeInBytes
@@ -48,4 +53,14 @@ Title Power Collector
 [*] --right> Idle
 Idle: TotalPowerConsumed
 Idle --> Idle: PowerConsumed
+@enduml
+
+==========================================================================================================
+
+@startuml
+Title Authentication Factor Manager
+[*] --right> Idle
+Idle --> GetAuthentication: AuthenticationType
+GetAuthentication: PowerConsumed\nAuthenticationResult
+GetAuthentication --> Idle
 @enduml
