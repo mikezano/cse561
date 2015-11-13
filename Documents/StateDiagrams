@@ -1,0 +1,51 @@
+@startuml
+Title Symmetric Encryption
+[*] --right> Idle
+Idle --> Operate
+Idle: N/A
+Operate --> Idle
+note right of Idle: Transition to operate\nupon receiving inputs:\n  Key\n  Payload\n  PayloadSizeInBytes
+Operate: Outputs:\n  PowerConsumed\n  OutputSizeInBytes\n  EcnryptedPayload 
+
+@enduml
+
+==========================================================================================================
+
+@startuml
+Title AuthenticationManager
+[*] --down> Idle
+
+Idle --> InitKdcSession: ApplicationName 
+Idle: N/A
+
+
+InitKdcSession: Outputs:\n  Key\n  Payload\n  PayloadSizeInBytes
+InitKdcSession --> UnencryptKdcSessionKey: OutputSizeInBytes\nEcnryptedPayload
+  
+
+UnencryptKdcSessionKey: OutputSizeInBytes\nEcnryptedPayload
+UnencryptKdcSessionKey --right> EncryptSessionRequest: tgt\nKdcSessionKey
+
+EncryptSessionRequest: KdcSessionKey\nDestinationName
+EncryptSessionRequest --> RequestDestinationSession: EncryptedSessionRequest
+
+RequestDestinationSession: EncryptedSessionRequest
+
+RequestDestinationSession -left-> UnencryptDestinationSessionKey: DestinationSessionKey
+UnencryptDestinationSessionKey: EncryptedDestinationSessionKey
+
+UnencryptDestinationSessionKey -up-> EncryptDestinationRequest: DestinationSessionKey
+EncryptDestinationRequest: DestinationSessionKey\nRequest\nAuthentication
+EncryptDestinationRequest -up-> DestinationRequest: EncryptedDestinationRequest
+DestinationRequest: EncryptedDestinationRequest
+DestinationRequest -right-> Idle: DestinationResponse
+@enduml
+
+==========================================================================================================
+
+@startuml
+Title Power Collector
+[*] --right> Idle
+Idle: TotalPowerConsumed
+Idle --> Idle: PowerConsumed
+@enduml

@@ -1,9 +1,10 @@
 @startuml
+Title Initiator/KDC Session Establishment
 
 participant Initiator as i
 participant SymmCrypto as s
 participant KDC as k
-participant Recipient as r 
+ 
 
 'TGT: Ticket Granting Ticket
 '	  TGT contains the session key, expiration date and user's IP address. 
@@ -24,6 +25,7 @@ k -> s: Decrypt(encrypted name+timestamp, initiatorMKey)
 activate s
 k <-- s
 deactivate s
+
 k -> k: Authenticate(Initiator)
 k -> k: iKDCKey = GenerateSessionKey()
 note left: This session key is between Initiator and KDC
@@ -43,6 +45,17 @@ i <-- k: encrypted tgt + encrypted iKDCKey
 note right: Return TGT which is encrypted with\nKDC master key. Return encrypted\nsession key which is encrypted\nwith Initiator's mater key. 
 deactivate k
 
+@enduml
+============================================================================
+@startuml
+Title Initiator/Recipient Session Request
+
+participant Initiator as i
+participant SymmCrypto as s
+participant KDC as k
+
+
+activate i
 i -> s: Decrypt(encrypted iKDCKey)
 activate s
 i <-- s: 
@@ -94,7 +107,17 @@ i -> s: decrypt(sessionPayload, iKDCKey)
 activate s
 i <-- s
 deactivate s
+@enduml
+============================================================================
+@startuml
+Title Initiator/Recipient Session Request
 
+participant Initiator as i
+participant SymmCrypto as s
+participant KDC as k
+participant Recipient as r
+
+activate i
 i -> r: Request(ticket)
 activate r
 r -> s: decrypt(ticket, recipientMKey)
