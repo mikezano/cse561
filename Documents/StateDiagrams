@@ -18,7 +18,7 @@ Title AuthenticationManager
 Idle --> InitKdcSession: ApplicationName\nSecurityLevel(1)\nDestinationName 
 Idle: N/A
 
-Idle -right-> AuthenticateUser: ApplicationName\nSecurityLevel(2)\nDestinationName
+Idle -down-> AuthenticateUser: ApplicationName\nSecurityLevel(2)\nDestinationName
 AuthenticateUser: AuthenticationType
 
 AuthenticateUser --> InitKdcSession: AuthenticationResult
@@ -42,9 +42,35 @@ UnencryptDestinationSessionKey: EncryptedDestinationSessionKey
 UnencryptDestinationSessionKey -up-> EncryptDestinationRequest: DestinationSessionKey
 EncryptDestinationRequest: DestinationSessionKey\nRequest\nAuthentication
 EncryptDestinationRequest -up-> DestinationRequest: EncryptedDestinationRequest
-DestinationRequest: EncryptedDestinationRequest
 DestinationRequest -right-> Idle: DestinationResponse
+
 @enduml
+
+@startuml
+Title AuthenticationManager
+[*] --down> Idle
+Idle -right-> GetCertificate: ApplicateionName\nSecurityLevel(3)\nDestinationName
+GetCertificate: Destination
+
+GetCertificate -up-> DecryptCertificate: Encrypted hash\nEncrypted Certificate\nCA Public Key 
+DecryptCertificate: Hash\nDestination Certificate
+
+DecryptCertificate -up-> GetCertificateHash: Destination certificate
+GetCertificateHash: Certificate hash
+
+GetCertificateHash -up-> EncryptAsymmDestinationRequest: Message\nDestination Public Key
+EncryptAsymmDestinationRequest: Encrypted Message
+
+EncryptAsymmDestinationRequest -left-> GetMessageHash: Message
+GetMessageHash: Message Hash
+GetMessageHash -down-> EncryptAsymmDestinationMessage: Message\nDestination Public Key
+EncryptAsymmDestinationMessage: Encrypted Message
+
+EncryptAsymmDestinationMessage -down-> SendMessage: Encrypted Message\nEncrypted Hash
+SendMessage --> Idle
+@enduml
+
+
 
 ==========================================================================================================
 
@@ -64,3 +90,7 @@ Idle --> GetAuthentication: AuthenticationType
 GetAuthentication: PowerConsumed\nAuthenticationResult
 GetAuthentication --> Idle
 @enduml
+
+
+==========================================================================================================
+

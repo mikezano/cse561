@@ -1,0 +1,84 @@
+@startuml
+Title PKI
+
+participant Initiator as i
+participant AsymmCrypto as a
+participant HashEngine as h
+participant CertificateAuthority as c
+participant Destination as d
+
+'ask for destination public key
+'receive encrypted destination certificate and hash of certificate
+'decrypt using public key to get certificate
+'calculate hash to verify certificate
+'use certificate key to send encrypted message to destination
+
+
+
+activate i
+i -> c: GetCertificate(Destination)
+activate c
+c -> h: Hash(DestinationCerificate)
+activate h
+c <-- h
+deactivate h
+c -> a: Encrypt(ceritificate + hash, CAPrivateKey)
+activate a
+c <-- a
+deactivate a
+i <-- c: Encrypted hash + certificate
+deactivate c
+
+i -> a: Decrypt(hash + certificate, publicCAKey)
+activate a
+i <-- a
+deactivate a
+
+i -> h: Hash(certificate)
+activate h
+i <-- h
+deactivate h
+
+i -> a: encrypt(message, DestinationPublicKey)
+activate a
+i <-- a
+deactivate a
+
+i -> h: Hash(message)
+activate h
+i <-- h
+deactivate h
+
+i -> a: Encrypt(hash, InitiatorPrivateKey)
+activate a
+i <-- a
+deactivate a
+
+i -> a: Encrypt(message, DestinationPublicKey)
+activate a
+i <-- a
+deactivate a
+
+
+i -> d: Send(encrypted message + encrypted hash)
+activate d
+d -> a: Decrypt(message, DestinationPrivateKey)
+activate a
+d <-- a
+deactivate a
+
+d -> a: Decrypt(hash, InitiatorPublicKey)
+activate a
+d <-- a
+deactivate a
+
+d -> h: Hash(message)
+activate h
+d <-- h
+deactivate h
+
+i <-- d: Ack
+deactivate d
+deactivate i
+
+@enduml
