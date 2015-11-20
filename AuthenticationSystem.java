@@ -29,6 +29,8 @@ public class AuthenticationSystem extends ViewableDigraph {
 		addInport("ApplicationName");
 		addInport("PayloadSize");
 		addOutport("out");
+		addOutport("outCA");
+		addOutport("outTC");
 		
 		AuthenticationManager am = new AuthenticationManager();
 		AuthenticationFactorManager afm = new AuthenticationFactorManager();
@@ -46,11 +48,12 @@ public class AuthenticationSystem extends ViewableDigraph {
 		addCoupling(this,"ApplicationName", am, "ApplicationName");
 		addCoupling(this,"PayloadSize", am, "PayloadSize");
 		addCoupling(this, "in", am, "in");
-		addCoupling(am, "out", afm, "in");
-		addCoupling(afm, "out", this, "out");
-		
+		addCoupling(am, "out", afm, "in");	
 		addCoupling(am, "out", se, "in");
 		addCoupling(am, "out", ae, "in");	
+		addCoupling(afm, "out", am, "inAFM");
+		addCoupling(se,"out", am, "inSymmetric");
+		addCoupling(ae,"out", am, "inAsymmetric");
 	}
 	
 	public void  Deltext(double e, message x){
@@ -68,10 +71,10 @@ public class AuthenticationSystem extends ViewableDigraph {
      */
     public void layoutForSimView()
     {
-        preferredSize = new Dimension(591, 332);
-        ((ViewableComponent)withName("Authentication Manager")).setPreferredLocation(new Point(20, 42));
-        ((ViewableComponent)withName("Authentication Factor Manager")).setPreferredLocation(new Point(26, 206));
-        ((ViewableComponent)withName("Asymm Encryption")).setPreferredLocation(new Point(292, 122));
+        preferredSize = new Dimension(638, 220);
+        ((ViewableComponent)withName("Authentication Manager")).setPreferredLocation(new Point(-9, 39));
         ((ViewableComponent)withName("Symmetric Encryption")).setPreferredLocation(new Point(281, 30));
+        ((ViewableComponent)withName("Asymm Encryption")).setPreferredLocation(new Point(292, 122));
+        ((ViewableComponent)withName("Authentication Factor Manager")).setPreferredLocation(new Point(28, 127));
     }
 }

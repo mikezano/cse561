@@ -53,8 +53,8 @@ public class Server extends ViewableDigraph {
      */
     public void layoutForSimView()
     {
-        preferredSize = new Dimension(471, 273);
-        ((ViewableComponent)withName("Session Manager")).setPreferredLocation(new Point(200, 106));
-        ((ViewableComponent)withName("Ticket Manager")).setPreferredLocation(new Point(27, 110));
+        preferredSize = new Dimension(250, 186);
+        ((ViewableComponent)withName("Session Manager")).setPreferredLocation(new Point(-9, 108));
+        ((ViewableComponent)withName("Ticket Manager")).setPreferredLocation(new Point(-6, 27));
     }
 }

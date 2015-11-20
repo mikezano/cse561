@@ -5,19 +5,18 @@ import model.modeling.message;
 import view.modeling.ViewableAtomic;
 
 
-public class SymmetricEncryption extends ViewableAtomic {
+public class TargetClient extends ViewableAtomic {
 	protected double waitTime = 0.1;
 	protected int duration;
 	protected entity currentVal;
  
-	public SymmetricEncryption(){
-		super("Symmetric Encryption");
+	public TargetClient(){
+		super("TC");
 		addInport("in");
 		addOutport("out");
-		addOutport("outSymmetric");
 	}
 
-	public SymmetricEncryption(String name){
+	public TargetClient(String name){
 		super(name);
 	}
 	

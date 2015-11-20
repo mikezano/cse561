@@ -5,19 +5,18 @@ import model.modeling.message;
 import view.modeling.ViewableAtomic;
 
 
-public class SymmetricEncryption extends ViewableAtomic {
+public class CertificateAuthority extends ViewableAtomic {
 	protected double waitTime = 0.1;
 	protected int duration;
 	protected entity currentVal;
  
-	public SymmetricEncryption(){
-		super("Symmetric Encryption");
+	public CertificateAuthority(){
+		super("CA");
 		addInport("in");
 		addOutport("out");
-		addOutport("outSymmetric");
 	}
 
-	public SymmetricEncryption(String name){
+	public CertificateAuthority(String name){
 		super(name);
 	}
 	

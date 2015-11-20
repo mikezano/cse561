@@ -15,6 +15,9 @@ public class AuthenticationManager extends ViewableAtomic {
 		addInport("SecurityLevel");
 		addInport("ApplicationName");
 		addInport("PayloadSize");
+		addInport("inSymmetric");
+		addInport("inAsymmetric");
+		addInport("inAFM");
 		addInport("in");
 		addOutport("out");
 	}

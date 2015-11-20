@@ -23,15 +23,17 @@ public class SimulationSystem extends ViewableDigraph {
 	}
 
 	private void CoupledModelConstruct() {
-		// TODO Auto-generated method stub
-		addInport("in");
-		addOutport("out");
+
 		
 		Application a = new Application();
 		AuthenticationSystem as = new AuthenticationSystem();
+		Server s = new Server();
+		CertificateAuthority ca = new CertificateAuthority();
+		TargetClient tc = new TargetClient();
 
 		add(a);
 		add(as);
+		add(s);
 		
 		addTestInput("start",new entity("20"));
 		
@@ -39,6 +41,9 @@ public class SimulationSystem extends ViewableDigraph {
 		addCoupling(a, "SecurityLevel", as, "SecurityLevel");
 		addCoupling(a, "ApplicationName", as, "ApplicationName");
 		addCoupling(a, "PayloadSize", as, "PayloadSize");
+		addCoupling(as, "outServer", s, "in");
+		addCoupling(as, "outCA", ca, "in");
+		addCoupling(as, "outTC", tc, "in");
 	
 	}
 	
@@ -53,8 +58,9 @@ public class SimulationSystem extends ViewableDigraph {
      */
     public void layoutForSimView()
     {
-        preferredSize = new Dimension(1137, 532);
-        ((ViewableComponent)withName("Application")).setPreferredLocation(new Point(26, 205));
-        ((ViewableComponent)withName("Authentication System")).setPreferredLocation(new Point(292, 120));
+        preferredSize = new Dimension(1533, 814);
+        ((ViewableComponent)withName("Authentication System")).setPreferredLocation(new Point(241, 27));
+        ((ViewableComponent)withName("Server")).setPreferredLocation(new Point(899, 29));
+        ((ViewableComponent)withName("Application")).setPreferredLocation(new Point(-6, 14));
     }
 }
