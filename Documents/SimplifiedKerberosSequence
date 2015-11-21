@@ -1,0 +1,39 @@
+@startuml
+Title Simplified KDC FLow
+
+participant Initiator as i
+participant KDC as k
+participant Recipient as r
+
+==Authentication and TGT Request== 
+activate i
+i -> i: Encrypt(name+timestamp, initiatorMKey)
+
+i -> k: RequestTgt(encrypted name+timestamp)
+activate k
+i <-- k: encrypted tgt + encrypted iKDCKey
+deactivate k
+
+
+==Session Request==
+
+i -> i: Decrypt(encrypted iKDCKey)
+i -> i: Save(iKDCKey)
+
+i -> i: Encrypt(RecipientSessionRequest, iKDCKey)
+
+i -> k: Request(encrypted RecipientSessionRequest, encrypted tgt)
+activate k
+
+i <-- k: sessionPayload (sessionPayload = sessionKey+ticket)
+deactivate k
+
+i -> i: decrypt(sessionPayload, iKDCKey)
+
+
+==Send Recipient Request==
+i -> r: Request(ticket)
+activate r
+i <-- r: return data encrypted with sessionKey
+deactivate r
+@enduml

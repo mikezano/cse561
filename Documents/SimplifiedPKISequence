@@ -5,18 +5,9 @@ participant Initiator as i
 participant CertificateAuthority as c
 participant Recipient as r
 
-'ask for destination public key
-'receive encrypted destination certificate and hash of certificate
-'decrypt using public key to get certificate
-'calculate hash to verify certificate
-'use certificate key to send encrypted message to destination
-
-
 activate i
 i -> c: GetCertificate(Destination)
 activate c
-c -> c: Hash(DestinationCerificate)
-c -> c: Encrypt(certificate + hash, CAPrivateKey)
 i <-- c: Encrypted hash + certificate
 deactivate c
 
@@ -25,16 +16,10 @@ i -> i: Hash(certificate)
 i -> i: encrypt(message, DestinationPublicKey)
 i -> i: Hash(message)
 i -> i: Encrypt(hash, InitiatorPrivateKey)
-
+i -> i: Encrypt(message, DestinationPublicKey)
 
 i -> r: Send(encrypted message + encrypted hash)
 activate r
-r -> r: Decrypt(message, DestinationPrivateKey)
-
-r -> r: Decrypt(hash, InitiatorPublicKey)
-
-r -> r: Hash(message)
-
 i <-- r: Ack
 deactivate r
 deactivate i

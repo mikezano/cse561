@@ -2,7 +2,7 @@
 Title Initiator/KDC Session Establishment
 
 participant Initiator as i
-participant SymmCrypto as s
+
 participant KDC as k
  
 
@@ -11,36 +11,25 @@ participant KDC as k
 '     The TGT encrypts the information mentioned. It's encrypted with the KDC's master key
 '
 '     The same session key that is embedded in the TGT is also encrypted with the user's master key and sent back.
-'	  This is so that the user can decrypt and use the session key. The TGT is thereafter used to request 
-'     sessio
+'	  This is so that the user can decrypt and use the session key. The TGT is thereafter used to request session 
+
 
 activate i
-i -> s: Encrypt(name+timestamp, initiatorMKey)
-activate s
-i <-- s
-deactivate s
+i -> i: Encrypt(name+timestamp, initiatorMKey)
+
 i -> k: RequestTgt(encrypted name+timestamp)
 activate k
-k -> s: Decrypt(encrypted name+timestamp, initiatorMKey)
-activate s
-k <-- s
-deactivate s
+k -> k: Decrypt(encrypted name+timestamp, initiatorMKey)
 
 k -> k: Authenticate(Initiator)
 k -> k: iKDCKey = GenerateSessionKey()
 note left: This session key is between Initiator and KDC
-k -> s: Encrypt(iKDCKey, initiatorMKey)
+k -> k: Encrypt(iKDCKey, initiatorMKey)
 note right: Encrypt session key with\nInitiator's master key.
-activate s
-k <-- s: 
-deactivate s
 k -> k: tgt = CreateTgt(iKDCKey, InitiatorIP, expDate)
 note left: Create TGT containing session key between\nInitiator and KDC, Initiator's IP and\nsession expiration date.
-k -> s: Encrypt(tgt, KdcMKey)
+k -> k: Encrypt(tgt, KdcMKey)
 note right: Encrypt TGT with KDC master key.\nNo one except KDC can read this.
-activate s
-k <-- s
-deactivate s
 i <-- k: encrypted tgt + encrypted iKDCKey
 note right: Return TGT which is encrypted with\nKDC master key. Return encrypted\nsession key which is encrypted\nwith Initiator's mater key. 
 deactivate k
@@ -51,84 +40,52 @@ deactivate k
 Title Initiator/Recipient Session Request
 
 participant Initiator as i
-participant SymmCrypto as s
 participant KDC as k
 
-
 activate i
-i -> s: Decrypt(encrypted iKDCKey)
-activate s
-i <-- s: 
-deactivate s
+i -> i: Decrypt(encrypted iKDCKey)
 
 i -> i: Save(iKDCKey)
 note right: This is the session key\nbetween Initiator and KDC
 
-
-i -> s: Encrypt(RecipientSessionRequest, iKDCKey)
+i -> i: Encrypt(RecipientSessionRequest, iKDCKey)
 note left: Request KDC to get session\nticket with Recipient. 
-activate s
-i <-- s
-deactivate s
-
 
 i -> k: Request(encrypted RecipientSessionRequest, encrypted tgt)
 note right: TGT is included along with the request. 
 activate k
-k -> s: Decrypt(tgt, KDCMasterKey)
+k -> k: Decrypt(tgt, KDCMasterKey)
 note right: Now KDC has the iKDCKey again.
-activate s
-k <-- s
-deactivate s
-k -> s: Decrypt(RecipientSessionRequest, iKDCKey)
-activate s
-k <-- s
-deactivate s
 
+k -> k: Decrypt(RecipientSessionRequest, iKDCKey)
 
 k -> k: irKey = GenerateSessionKey()
 note left: This session key is\nfor Initiator and Recipient
-k -> s: Encrypt(irKey, recipientMKey)
+k -> k: Encrypt(irKey, recipientMKey)
 note left: This is the 'ticket' for\ninitiator to send to\n the Recipient.
-activate s
-k <-- s
-deactivate s
 
-k -> s: Encrypt(irKey, iKDCKey)
+k -> k: Encrypt(irKey, iKDCKey)
 note left: Encrypt Initiator-Recipient\nsession key with session\nkey between Initiator\nand KDC 
-activate s
-k <-- s
-deactivate s
 
 i <-- k: sessionPayload (sessionPayload = sessionKey+ticket)
 deactivate k
 
-i -> s: decrypt(sessionPayload, iKDCKey)
-activate s
-i <-- s
-deactivate s
+i -> i: decrypt(sessionPayload, iKDCKey)
+
 @enduml
 ============================================================================
 @startuml
 Title Initiator/Recipient Session Request
 
 participant Initiator as i
-participant SymmCrypto as s
-participant KDC as k
 participant Recipient as r
 
 activate i
 i -> r: Request(ticket)
 activate r
-r -> s: decrypt(ticket, recipientMKey)
-activate s
-r <-- s: sessionKey
-deactivate s
+r -> r: decrypt(ticket, recipientMKey):sessionKey 
 r -> r: processRequest
-r -> s: encrypt(data, sessionKey)
-activate s
-r <-- s
-deactivate s
+r -> r: encrypt(data, sessionKey)
 i <-- r: return data encrypted with sessionKey
 deactivate r
 
