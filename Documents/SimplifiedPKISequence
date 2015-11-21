@@ -1,5 +1,5 @@
 @startuml
-Title PKI
+Title PKI Simplified FLow
 
 participant Initiator as i
 participant CertificateAuthority as c
