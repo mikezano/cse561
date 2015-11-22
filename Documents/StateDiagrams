@@ -15,17 +15,19 @@ Operate: Outputs:\n  PowerConsumed\n  OutputSizeInBytes\n  EcnryptedPayload
 Title AuthenticationManager
 [*] --down> Idle
 
-Idle --> InitKdcSession: ApplicationName\nSecurityLevel(1)\nDestinationName 
+Idle --> EncryptKdcSessionRequest: ApplicationName\nSecurityLevel(1)\nDestinationName 
 Idle: N/A
 
 Idle -down-> AuthenticateUser: ApplicationName\nSecurityLevel(2)\nDestinationName
 AuthenticateUser: AuthenticationType
 
-AuthenticateUser --> InitKdcSession: AuthenticationResult
+AuthenticateUser --> EncryptKdcSessionRequest: AuthenticationResult
 
+EncryptKdcSessionRequest --> InitKdcSession: EncryptedPayload
+EncryptKdcSessionRequest: Outputs:\n  PlainTextPayload
 
-InitKdcSession: Outputs:\n  Key\n  Payload\n  PayloadSizeInBytes
-InitKdcSession --> UnencryptKdcSessionKey: OutputSizeInBytes\nEcnryptedPayload
+InitKdcSession: Outputs:\n  KdcSessionRequest
+InitKdcSession --> UnencryptKdcSessionKey: Tgt\nPayloadSizeInBytes
   
 
 UnencryptKdcSessionKey: OutputSizeInBytes\nEcnryptedPayload
