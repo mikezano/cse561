@@ -36,11 +36,15 @@ public class AuthenticationSystem extends ViewableDigraph {
 		AuthenticationFactorManager afm = new AuthenticationFactorManager();
 		SymmetricEncryption se = new SymmetricEncryption();
 		AsymmetricEncryption ae = new AsymmetricEncryption();
+		CertificateAuthority ca = new CertificateAuthority(); 
+		Transducer t = new Transducer();
 	
 		add(am);
 		add(afm);
 		add(se);
 		add(ae);
+		add(ca);
+		add(t);
 		
 		addTestInput("start",new entity("20"));
 		
@@ -50,10 +54,18 @@ public class AuthenticationSystem extends ViewableDigraph {
 		addCoupling(this, "in", am, "in");
 		addCoupling(am, "out", afm, "in");	
 		addCoupling(am, "out", se, "in");
-		addCoupling(am, "out", ae, "in");	
+		addCoupling(am, "out", ae, "in");
+		addCoupling(am, "out", ca, "in");
 		addCoupling(afm, "out", am, "inAFM");
 		addCoupling(se,"out", am, "inSymmetric");
 		addCoupling(ae,"out", am, "inAsymmetric");
+		
+		//Tranducers
+		addCoupling(am, "out", t, "arriveAM");
+		addCoupling(afm, "out", t, "arriveAFM");
+		addCoupling(se, "out", t, "arriveSE");
+		addCoupling(ae, "out", t, "arriveAE");
+		addCoupling(ca, "out", t, "arriveCA");
 	}
 	
 	public void  Deltext(double e, message x){
@@ -71,10 +83,12 @@ public class AuthenticationSystem extends ViewableDigraph {
      */
     public void layoutForSimView()
     {
-        preferredSize = new Dimension(638, 220);
-        ((ViewableComponent)withName("Authentication Manager")).setPreferredLocation(new Point(-9, 39));
+        preferredSize = new Dimension(756, 539);
         ((ViewableComponent)withName("Symmetric Encryption")).setPreferredLocation(new Point(281, 30));
-        ((ViewableComponent)withName("Asymm Encryption")).setPreferredLocation(new Point(292, 122));
         ((ViewableComponent)withName("Authentication Factor Manager")).setPreferredLocation(new Point(28, 127));
+        ((ViewableComponent)withName("Authentication Manager")).setPreferredLocation(new Point(50, 306));
+        ((ViewableComponent)withName("CA")).setPreferredLocation(new Point(50, 50));
+        ((ViewableComponent)withName("Asymm Encryption")).setPreferredLocation(new Point(292, 122));
+        ((ViewableComponent)withName("TRANSDUCER")).setPreferredLocation(new Point(381, 234));
     }
 }

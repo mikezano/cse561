@@ -60,7 +60,7 @@ public class SimulationSystem extends ViewableDigraph {
     {
         preferredSize = new Dimension(1533, 814);
         ((ViewableComponent)withName("Authentication System")).setPreferredLocation(new Point(241, 27));
-        ((ViewableComponent)withName("Server")).setPreferredLocation(new Point(899, 29));
+        ((ViewableComponent)withName("Server")).setPreferredLocation(new Point(1024, 27));
         ((ViewableComponent)withName("Application")).setPreferredLocation(new Point(-6, 14));
     }
 }
