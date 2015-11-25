@@ -1,43 +1,30 @@
 package cse561;
+import GenCol.doubleEnt;
 import GenCol.entity;
 import model.modeling.content;
 import model.modeling.message;
 import view.modeling.ViewableAtomic;
 
 
-public class AuthenticationManager extends ViewableAtomic {
+public class KerberosServer extends ViewableAtomic {
 	protected double waitTime = 0.1;
 	protected int duration;
 	protected entity currentVal;
  
-	public AuthenticationManager(){
-		super("Authentication Manager");
-		addInport("SecurityLevel");
-		addInport("ApplicationName");
-		addInport("PayloadSize");
-		addInport("inSymmetric");
-		addInport("inAsymmetric");
-		addInport("inAFM");
+	public KerberosServer(){
+		super("KS");
 		addInport("in");
 		addOutport("out");
-		addOutport("PrivateKey");
-		addOutport("PublicKey");
-		addOutport("SymmKey");
-		addOutport("PowerConsumed");
-		addOutport("PayloadSizeInBytes");
-		addOutport("Payload");
-		addOutport("AuthenticationType");
-		addOutport("Credentials");
-		addOutport("Request");
 	}
 
-	public AuthenticationManager(String name){
+	public KerberosServer(String name){
 		super(name);
 	}
 	
 	public void initialize(){
 		passivate();
 		super.initialize();
+		holdIn("active", 0); //immediately trigger delta internal, and output
 	}
 	
 	public void deltext(double e,message x){
@@ -58,8 +45,14 @@ public class AuthenticationManager extends ViewableAtomic {
 	}
 	
 	public message out( ){
-		message m = new message();
-		content con = makeContent("out", new entity("out"));
-		return m;
+//		message m = new message();
+//		content securityLevel = makeContent("SecurityLevel", new doubleEnt(1));
+//		content applicationName = makeContent("ApplicationName", new entity("XYZ"));
+//		content payloadSize = makeContent("PayloadSize", new doubleEnt(3));
+//		m.add(securityLevel);
+//		m.add(applicationName);
+//		m.add(payloadSize);
+//		return m;
+		return null;
 	}
 } 
