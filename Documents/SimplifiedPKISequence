@@ -16,7 +16,6 @@ i -> i: Hash(certificate)
 i -> i: encrypt(message, DestinationPublicKey)
 i -> i: Hash(message)
 i -> i: Encrypt(hash, InitiatorPrivateKey)
-i -> i: Encrypt(message, DestinationPublicKey)
 
 i -> r: Send(encrypted message + encrypted hash)
 activate r

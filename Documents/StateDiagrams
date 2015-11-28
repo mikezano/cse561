@@ -12,63 +12,66 @@ Operate: Outputs:\n  PowerConsumed\n  OutputSizeInBytes\n  EcnryptedPayload
 ==========================================================================================================
 
 @startuml
-Title AuthenticationManager
+Title AuthenticationManager: Kerberos
 [*] --down> Idle
 
 Idle --> EncryptKdcSessionRequest: ApplicationName\nSecurityLevel(1)\nDestinationName 
 Idle: N/A
 
-Idle -down-> AuthenticateUser: ApplicationName\nSecurityLevel(2)\nDestinationName
-AuthenticateUser: AuthenticationType
+Idle -right-> AuthenticateUser: ApplicationName\nSecurityLevel(2)\nDestinationName
+AuthenticateUser: Outputs:\n  AuthenticationType
 
-AuthenticateUser --> EncryptKdcSessionRequest: AuthenticationResult
+AuthenticateUser -down-> EncryptKdcSessionRequest: AuthenticationResult
 
-EncryptKdcSessionRequest --> InitKdcSession: EncryptedPayload
-EncryptKdcSessionRequest: Outputs:\n  PlainTextPayload
+EncryptKdcSessionRequest: Outputs:\n  OutputSizeInBytes
+EncryptKdcSessionRequest -down-> InitKdcSession: EncryptedPayload
+
 
 InitKdcSession: Outputs:\n  KdcSessionRequest
-InitKdcSession --> UnencryptKdcSessionKey: Tgt\nPayloadSizeInBytes
+InitKdcSession --> DecryptKdcSessionKey: \n  PayloadType:Tgt\n  PayloadSize
   
 
-UnencryptKdcSessionKey: OutputSizeInBytes\nEcnryptedPayload
-UnencryptKdcSessionKey --right> EncryptSessionRequest: tgt\nKdcSessionKey
+DecryptKdcSessionKey: Outputs:\n  OutputSizeInBytes\n  PlainTextPayload
+DecryptKdcSessionKey --> EncryptRecipientSessionRequest: Tgt\nKdcSessionKey
 
-EncryptSessionRequest: KdcSessionKey\nDestinationName
-EncryptSessionRequest --> RequestDestinationSession: EncryptedSessionRequest
+EncryptRecipientSessionRequest: Outputs:\n  EncryptedPayload
+EncryptRecipientSessionRequest -left-> RequestRecipientSession: EncryptedPayload
 
-RequestDestinationSession: EncryptedSessionRequest
+RequestRecipientSession: Outputs:\n  EncryptedPayload\n  PayloadSizeInBytes
 
-RequestDestinationSession -left-> UnencryptDestinationSessionKey: DestinationSessionKey
-UnencryptDestinationSessionKey: EncryptedDestinationSessionKey
+RequestRecipientSession -up-> DecryptRecipientSessionKey: RecipientSessionKey\nPayloadSizeInBytes
+DecryptRecipientSessionKey: Outputs:\n  PlayTextPayload\n  PayloadSizeInBytes
 
-UnencryptDestinationSessionKey -up-> EncryptDestinationRequest: DestinationSessionKey
-EncryptDestinationRequest: DestinationSessionKey\nRequest\nAuthentication
-EncryptDestinationRequest -up-> DestinationRequest: EncryptedDestinationRequest
-DestinationRequest -right-> Idle: DestinationResponse
+DecryptRecipientSessionKey -up-> EncryptRecipientRequest: RecipientSessionKey
+EncryptRecipientRequest: Outputs:\n  EncryptedPayload\n  PayloadSizeInBytes
+EncryptRecipientRequest -up-> SendMessage: EncryptedRecipientRequest
+SendMessage -right-> Idle
 
 @enduml
 
 @startuml
-Title AuthenticationManager
+Title AuthenticationManager: PKI
 [*] --down> Idle
-Idle -right-> GetCertificate: ApplicateionName\nSecurityLevel(3)\nDestinationName
-GetCertificate: Destination
+Idle -right-> GetCertificate: ApplicateionName\nSecurityLevel(3)\nReceiverName
+GetCertificate: Outputs:\n  Recipient ID
 
-GetCertificate -up-> DecryptCertificate: Encrypted hash\nEncrypted Certificate\nCA Public Key 
-DecryptCertificate: Hash\nDestination Certificate
+GetCertificate -up-> DecryptCertificate: Encrypted hash + Certificate\nCA Public Key 
+DecryptCertificate: Outputs: \n  Encrypted hash + Certificate
 
-DecryptCertificate -up-> GetCertificateHash: Destination certificate
-GetCertificateHash: Certificate hash
+DecryptCertificate -up-> GetCertificateHash: Receiver certificate
+GetCertificateHash: Outputs:\n  Certificate hash
 
-GetCertificateHash -up-> EncryptAsymmDestinationRequest: Message\nDestination Public Key
-EncryptAsymmDestinationRequest: Encrypted Message
+GetCertificateHash -up-> EncryptAsymmReceiverRequest: Message\nReceiver Public Key
+EncryptAsymmReceiverRequest: Outputs: \n  Encrypted Message
 
-EncryptAsymmDestinationRequest -left-> GetMessageHash: Message
-GetMessageHash: Message Hash
-GetMessageHash -down-> EncryptAsymmDestinationMessage: Message\nDestination Public Key
-EncryptAsymmDestinationMessage: Encrypted Message
+EncryptAsymmReceiverRequest -left-> GetMessageHash: Message
+GetMessageHash: Outputs:\n  Message Hash
+GetMessageHash -down-> EncryptAsymmHash: Hash 
+EncryptAsymmHash: Outputs:\n Encrypted Hash
 
-EncryptAsymmDestinationMessage -down-> SendMessage: Encrypted Message\nEncrypted Hash
+EncryptAsymmHash --> SendMessage: Encrypted Hash\nEncrypted Message 
+
+
 SendMessage --> Idle
 @enduml
 
