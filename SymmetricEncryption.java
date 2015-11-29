@@ -1,52 +1,23 @@
 package cse561;
-import GenCol.entity;
-import model.modeling.content;
-import model.modeling.message;
-import view.modeling.ViewableAtomic;
 
-
-public class SymmetricEncryption extends ViewableAtomic {
-	protected double waitTime = 0.1;
-	protected int duration;
-	protected entity currentVal;
+public class SymmetricEncryption extends GenericCryptoEngine {
  
+	public static final double MilliWattsPerByte = 0.2;
+	
 	public SymmetricEncryption(){
-		super("Symmetric Encryption");
-		addInport("in");
-		addOutport("out");
-		addOutport("outSymmetric");
+		super("Symm Encryption", CryptoEngineType.SYMMETRIC, MilliWattsPerByte);
 	}
 
 	public SymmetricEncryption(String name){
-		super(name);
+		super(name, CryptoEngineType.SYMMETRIC, MilliWattsPerByte);
 	}
 	
-	public void initialize(){
-		passivate();
+	public SymmetricEncryption(String name, double mwPerByte){
+		super(name, CryptoEngineType.SYMMETRIC, mwPerByte);
+	}
+	
+	public void initialize()
+	{
 		super.initialize();
-	}
-	
-	public void deltext(double e,message x){
-		Continue(e);//resets timer
-		if(messageOnPort(x,"in1",0) ){
-			
-			currentVal = x.getValOnPort("In1",0);
-			//can check for input value (i.e., input event = 1M)
-			//phase = "WAIT";
-			//duration = 1;//storing for later what the duration of the light switch is
-			//sigma = waitTime;
-			holdIn("active", 1);
-		}
-	}
-	
-	public void deltint( ){
-		passivate();
-	}
-	
-	public message out( ){
-		message m = new message();
-		content con = makeContent("out", new entity("out"));
-		m.add(con);
-		return m;
 	}
 } 

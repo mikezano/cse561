@@ -1,13 +1,10 @@
 package cse561;
 
-
 import java.awt.Dimension;
 import java.awt.Point;
 
 import GenCol.entity;
-import SimpArcMod.genr;
 import model.modeling.message;
-import view.modeling.ViewableAtomic;
 import view.modeling.ViewableComponent;
 import view.modeling.ViewableDigraph;
 
@@ -17,35 +14,34 @@ public class AuthenticationSystem extends ViewableDigraph {
 		super("Authentication System");
 		CoupledModelConstruct();
 	}
+
 	public AuthenticationSystem(String name) {
-		super("Authentication System");
+		super(name);
 		CoupledModelConstruct();
 	}
 
 	private void CoupledModelConstruct() {
-		// TODO Auto-generated method stub
-		addInport("in");
-		addInport("SecurityLevel");
-		addInport("ApplicationName");
-		addInport("PayloadSize");
-		addOutport("out");
-		addOutport("outCA");
-		addOutport("outTC");
-		
+		addInport("in_secLvl");
+		addInport("in_initId");
+		addInport("in_recvId");
+		addOutport("out_msg");
+
+		//Instantiate all components required.
 		AuthenticationManager am = new AuthenticationManager();
 		AuthenticationFactorManager afm = new AuthenticationFactorManager();
 		SymmetricEncryption se = new SymmetricEncryption();
 		AsymmetricEncryption ae = new AsymmetricEncryption();
-		CertificateAuthority ca = new CertificateAuthority(); 
-		KerberosServer ks = new KerberosServer();
+		//CertificateAuthority ca = new CertificateAuthority(); 
+		//KerberosServer ks = new KerberosServer();
 		Transducer t = new Transducer();
 	
+		//Add them to the model.
 		add(am);
 		add(afm);
 		add(se);
 		add(ae);
-		add(ca);
-		add(ks);
+		//add(ca);
+		//add(ks);
 		add(t);
 		
 		addTestInput("start",new entity("20"));
@@ -57,8 +53,8 @@ public class AuthenticationSystem extends ViewableDigraph {
 		addCoupling(am, "out", afm, "in");	
 		addCoupling(am, "out", se, "in");
 		addCoupling(am, "out", ae, "in");
-		addCoupling(am, "out", ca, "in");
-		addCoupling(am, "out", ks, "in");
+		//addCoupling(am, "out", ca, "in");
+		//addCoupling(am, "out", ks, "in");
 		addCoupling(afm, "out", am, "inAFM");
 		addCoupling(se,"out", am, "inSymmetric");
 		addCoupling(ae,"out", am, "inAsymmetric");
@@ -68,7 +64,7 @@ public class AuthenticationSystem extends ViewableDigraph {
 		addCoupling(afm, "out", t, "arriveAFM");
 		addCoupling(se, "out", t, "arriveSE");
 		addCoupling(ae, "out", t, "arriveAE");
-		addCoupling(ca, "out", t, "arriveCA");
+		//addCoupling(ca, "out", t, "arriveCA");
 	}
 	
 	public void  Deltext(double e, message x){

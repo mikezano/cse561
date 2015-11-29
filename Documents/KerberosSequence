@@ -37,7 +37,6 @@ deactivate k
 @enduml
 ============================================================================
 @startuml
-Title Initiator/Recipient Session Request
 
 participant Initiator as i
 participant KDC as k

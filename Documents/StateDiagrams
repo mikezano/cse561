@@ -13,37 +13,37 @@ Operate: Outputs:\n  PowerConsumed\n  OutputSizeInBytes\n  EcnryptedPayload
 
 @startuml
 Title AuthenticationManager: Kerberos
-[*] --down> Idle
+[*] --up> Idle
 
-Idle --> EncryptKdcSessionRequest: ApplicationName\nSecurityLevel(1)\nDestinationName 
+Idle --> EncryptKdcSessionRequest: SecurityLevel(1)\nRecipientName\nInitiatorName 
 Idle: N/A
 
-Idle -right-> AuthenticateUser: ApplicationName\nSecurityLevel(2)\nDestinationName
-AuthenticateUser: Outputs:\n  AuthenticationType
+Idle -right-> AuthenticateUser: SecurityLevel(2)\nRecipientName\nInitiatorName
+AuthenticateUser: AuthenticationType
 
 AuthenticateUser -down-> EncryptKdcSessionRequest: AuthenticationResult
 
-EncryptKdcSessionRequest: Outputs:\n  OutputSizeInBytes
+EncryptKdcSessionRequest: OutputSizeInBytes
 EncryptKdcSessionRequest -down-> InitKdcSession: EncryptedPayload
 
 
-InitKdcSession: Outputs:\n  KdcSessionRequest
+InitKdcSession: KdcSessionRequest
 InitKdcSession --> DecryptKdcSessionKey: \n  PayloadType:Tgt\n  PayloadSize
   
 
-DecryptKdcSessionKey: Outputs:\n  OutputSizeInBytes\n  PlainTextPayload
+DecryptKdcSessionKey: OutputSizeInBytes\nPlainTextPayload
 DecryptKdcSessionKey --> EncryptRecipientSessionRequest: Tgt\nKdcSessionKey
 
-EncryptRecipientSessionRequest: Outputs:\n  EncryptedPayload
+EncryptRecipientSessionRequest: Payload
 EncryptRecipientSessionRequest -left-> RequestRecipientSession: EncryptedPayload
 
-RequestRecipientSession: Outputs:\n  EncryptedPayload\n  PayloadSizeInBytes
+RequestRecipientSession: EncryptedPayload\nPayloadSizeInBytes
 
 RequestRecipientSession -up-> DecryptRecipientSessionKey: RecipientSessionKey\nPayloadSizeInBytes
-DecryptRecipientSessionKey: Outputs:\n  PlayTextPayload\n  PayloadSizeInBytes
+DecryptRecipientSessionKey: PlayTextPayload\nPayloadSizeInBytes
 
 DecryptRecipientSessionKey -up-> EncryptRecipientRequest: RecipientSessionKey
-EncryptRecipientRequest: Outputs:\n  EncryptedPayload\n  PayloadSizeInBytes
+EncryptRecipientRequest: Payload\nPayloadSizeInBytes
 EncryptRecipientRequest -up-> SendMessage: EncryptedRecipientRequest
 SendMessage -right-> Idle
 
@@ -59,17 +59,17 @@ GetCertificate -up-> DecryptCertificate: Encrypted hash + Certificate\nCA Public
 DecryptCertificate: Outputs: \n  Encrypted hash + Certificate
 
 DecryptCertificate -up-> GetCertificateHash: Receiver certificate
-GetCertificateHash: Outputs:\n  Certificate hash
+GetCertificateHash: Outputs:\n  Certificate
 
-GetCertificateHash -up-> EncryptAsymmReceiverRequest: Message\nReceiver Public Key
-EncryptAsymmReceiverRequest: Outputs: \n  Encrypted Message
+GetCertificateHash -up-> EncryptAsymmReceiverRequest: Certificate Hash
+EncryptAsymmReceiverRequest: Outputs: \n  Message + Receiver Public Key
 
-EncryptAsymmReceiverRequest -left-> GetMessageHash: Message
-GetMessageHash: Outputs:\n  Message Hash
+EncryptAsymmReceiverRequest -left-> GetMessageHash: Encrypted Message
+GetMessageHash: Outputs:\n  Encrypted message
 GetMessageHash -down-> EncryptAsymmHash: Hash 
-EncryptAsymmHash: Outputs:\n Encrypted Hash
+EncryptAsymmHash: Outputs:\n Hash
 
-EncryptAsymmHash --> SendMessage: Encrypted Hash\nEncrypted Message 
+EncryptAsymmHash --> SendMessage: Encrypted Hash
 
 
 SendMessage --> Idle
