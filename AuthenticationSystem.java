@@ -5,6 +5,7 @@ import java.awt.Point;
 
 import GenCol.entity;
 import model.modeling.message;
+import view.modeling.ViewableAtomic;
 import view.modeling.ViewableComponent;
 import view.modeling.ViewableDigraph;
 
@@ -20,76 +21,99 @@ public class AuthenticationSystem extends ViewableDigraph {
 		CoupledModelConstruct();
 	}
 
+	private static final String m_authMgrName = "Authentication Manager"; 
+	private static final String m_authFactorMgrName = "Authentication Factor";
+	private static final String m_authServerName = "Authentication Server";
+	private static final String m_symmCryptoName = "Symmetric Crypto Engine";
+	private static final String m_asymmCryptoName = "Asymmetric Crypto Engine";
+	private static final String m_hashName = "Hash Engine";
+	private static final String m_appName = "Generator";
+	
 	private void CoupledModelConstruct() {
-		addInport("in_secLvl");
-		addInport("in_initId");
-		addInport("in_recvId");
+		addInport("in_start");
+//		addInport("in_initId");
+//		addInport("in_recvId");
 		addOutport("out_msg");
 
 		//Instantiate all components required.
-		AuthenticationManager am = new AuthenticationManager();
-		AuthenticationFactorManager afm = new AuthenticationFactorManager();
-		SymmetricEncryption se = new SymmetricEncryption();
-		AsymmetricEncryption ae = new AsymmetricEncryption();
-		//CertificateAuthority ca = new CertificateAuthority(); 
-		//KerberosServer ks = new KerberosServer();
-		Transducer t = new Transducer();
+		
+		AuthenticationManager authMngr = new AuthenticationManager(m_authMgrName);
+		
+		ViewableAtomic authFactorMngr = new AuthenticationFactorManager(m_authFactorMgrName);
+		ViewableAtomic authServer = new AuthenticationServer(m_authServerName);
+		ViewableAtomic symmCrypto = new SymmetricEncryption(m_symmCryptoName);
+		ViewableAtomic asymmCrypto = new AsymmetricEncryption(m_asymmCryptoName);
+		ViewableAtomic hashEngine = new Hash(m_hashName);
+		ViewableAtomic app = new Application(m_appName);
+		//Transducer t = new Transducer();
 	
 		//Add them to the model.
-		add(am);
-		add(afm);
-		add(se);
-		add(ae);
-		//add(ca);
-		//add(ks);
-		add(t);
+		add(authMngr);
+		add(authFactorMngr);
+		add(symmCrypto);
+		add(asymmCrypto);
+		add(hashEngine);
+		add(authServer);
+		add(app);
+		//add(t);
 		
-		addTestInput("start",new entity("20"));
+		initialize();
 		
-		addCoupling(this,"SecurityLevel", am, "SecurityLevel");
-		addCoupling(this,"ApplicationName", am, "ApplicationName");
-		addCoupling(this,"PayloadSize", am, "PayloadSize");
-		addCoupling(this, "in", am, "in");
-		addCoupling(am, "out", afm, "in");	
-		addCoupling(am, "out", se, "in");
-		addCoupling(am, "out", ae, "in");
-		//addCoupling(am, "out", ca, "in");
-		//addCoupling(am, "out", ks, "in");
-		addCoupling(afm, "out", am, "inAFM");
-		addCoupling(se,"out", am, "inSymmetric");
-		addCoupling(ae,"out", am, "inAsymmetric");
+		addTestInput("in_start", new entity("1"));
+		addTestInput("in_start", new entity("2"));
+		addTestInput("in_start", new entity("3"));
+		/*
+		addTestInput("in_initId", new entity("Source ID"));
+		addTestInput("in_recvId", new entity("Destination ID"));
+		addTestInput("in_secLvl", new entity("1"));
+		addTestInput("in_secLvl", new entity("2"));
+		addTestInput("in_secLvl", new entity("3"));
+		*/		
+
+		addCoupling(this, "in_start", app, "in_start");
 		
-		//Tranducers
-		addCoupling(am, "out", t, "arriveAM");
-		addCoupling(afm, "out", t, "arriveAFM");
-		addCoupling(se, "out", t, "arriveSE");
-		addCoupling(ae, "out", t, "arriveAE");
-		//addCoupling(ca, "out", t, "arriveCA");
+		addCoupling(app,"out_securityLevel", authMngr, "in_security");
+		addCoupling(app,"out_initId", authMngr, "in_initId");
+		addCoupling(app,"out_recvId", authMngr, "in_recvId");
+
+		addCoupling(authFactorMngr, "out_authResult", authMngr, "in_authResult");
+		addCoupling(symmCrypto, "out_size", authMngr, "in_symmSize");
+		addCoupling(asymmCrypto, "out_size", authMngr, "in_asymmSize");
+		addCoupling(hashEngine, "out_size", authMngr, "in_hashSize");
+		addCoupling(authServer, "out_payloadSize", authMngr, "in_srvPayloadSize");
+		
+		addCoupling(authMngr, "out_symmSize", symmCrypto, "in_payloadSize");
+		addCoupling(authMngr, "out_asymmSize", asymmCrypto, "in_payloadSize");
+		addCoupling(authMngr, "out_hashSize", hashEngine, "in_payloadSize");
+		addCoupling(authMngr, "out_authType", authFactorMngr, "in_authType");
+		addCoupling(authMngr, "out_srvReq", authServer, "in_type");
+		
+		asymmCrypto.setPreferredLocation(new Point(267, 50));
+		authFactorMngr.setPreferredLocation(new Point(600, 50));
+		hashEngine.setPreferredLocation(new Point(900, 50));
+		symmCrypto.setPreferredLocation(new Point(350, 400));
+		authServer.setPreferredLocation(new Point(750, 400));
+		authMngr.setPreferredLocation(new Point(275, 200));
+		app.setPreferredLocation(new Point(15, 200));
+		
+		//Transducer
+		/*
+		addCoupling(authMngr, "out", t, "arriveAM");
+		addCoupling(authFactorMngr, "out", t, "arriveAFM");
+		addCoupling(symmCrypto, "out", t, "arriveSE");
+		addCoupling(asymmCrypto, "out", t, "arriveAE");
+		*/
 	}
 	
-	public void  Deltext(double e, message x){
-		
-//		if (messageOnPort(x,"Securitylevel",0)){
-//			 entity val = x.getValOnPort("SecurityLevel",0);
-//			 holdIn("active",0);
-//
-//		}
+
+	
+	public void initialize()
+	{
+		super.initialize();
 	}
-
-
-    /**
-     * Automatically generated by the SimView program.
-     * Do not edit this manually, as such changes will get overwritten.
-     */
+	
     public void layoutForSimView()
     {
-        preferredSize = new Dimension(945, 612);
-        ((ViewableComponent)withName("KS")).setPreferredLocation(new Point(473, 190));
-        ((ViewableComponent)withName("CA")).setPreferredLocation(new Point(478, 73));
-        ((ViewableComponent)withName("TRANSDUCER")).setPreferredLocation(new Point(522, 335));
-        ((ViewableComponent)withName("Symmetric Encryption")).setPreferredLocation(new Point(45, 462));
-        ((ViewableComponent)withName("Authentication Manager")).setPreferredLocation(new Point(-4, 46));
-        ((ViewableComponent)withName("Asymm Encryption")).setPreferredLocation(new Point(53, 350));
-        ((ViewableComponent)withName("Authentication Factor Manager")).setPreferredLocation(new Point(28, 247));
+        preferredSize = new Dimension(1200, 600);
     }
 }

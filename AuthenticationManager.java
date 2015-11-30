@@ -111,7 +111,7 @@ public class AuthenticationManager extends ViewableAtomic
 		m_nextState = null;
 		phase = AuthState.IDLE.toString();
 		sigma = 1/0.0;
-		
+		/*
 		addTestInput("in_security", new entity("1"));
 		addTestInput("in_security", new entity("2"));
 		addTestInput("in_security", new entity("3"));
@@ -120,7 +120,7 @@ public class AuthenticationManager extends ViewableAtomic
 		addTestInput("in_authResult", new entity(AuthenticationFail));
 		addTestInput("in_symmSize", new entity("50"));
 		addTestInput("in_asymmSize", new entity("50"));
-		addTestInput("in_hashSize", new entity("50"));
+		addTestInput("in_hashSize", new entity("50"));*/
 	}
 	
 	public void initialize()
@@ -159,6 +159,7 @@ public class AuthenticationManager extends ViewableAtomic
 			} else {
 				m_authenticated = false;
 				phase = AuthState.IDLE.toString();
+				sigma = 1/0.0;
 			}
 		} else if (m_nextState != null) {
 			phase = m_nextState;
@@ -623,34 +624,55 @@ public class AuthenticationManager extends ViewableAtomic
 		public String Deltext(AuthenticationManager model, double e, message x) {
 			model.Continue(e);
 			String nextState = null;
+			System.out.println("idle: deltext. message size = " + x.size());
 			
-			if(model.messageOnPort(x, "in_security", 0) && model.phaseIs(AuthState.IDLE.toString())){
-				entity val = x.getValOnPort("in_security",0);
-				Double securityLevel = Double.parseDouble(val.toString());
-				String recvId = null;
-				String initId = null;
-				Integer size = 0;
-				if (x.onPort("in_recvId", 0)) {
-					recvId = x.getValOnPort("in_recvId", 0).toString();
+			String recvId = null;
+			String initId = null;
+			Integer size = 0;
+			entity val = null;
+			
+			//Parse all inputs.
+			for (int idx = 0; idx < x.size(); idx++) {
+				if (model.messageOnPort(x, "in_recvId", idx)) {
+					System.out.println("receiver ID latched at idx " + idx);
+					recvId = x.getValOnPort("in_recvId", idx).toString();
 				}
 				
-				if (x.onPort("in_initId", 0)) {
-					initId = x.getValOnPort("in_initId", 0).toString();
+				if (model.messageOnPort(x, "in_initId", idx)) {
+					System.out.println("initiator ID latched at idx" + idx);
+					initId = x.getValOnPort("in_initId", idx).toString();
+					SetInitId(initId);
 					size = GetInitId().length();
 				}
 				
-				if (securityLevel == 1) {
+				if (model.messageOnPort(x, "in_security", idx)) {
+					val = x.getValOnPort("in_security",0);
+				}
+			}
+			
+			//If no security level is received, return;
+			if (val == null) {
+				return nextState;
+			}
+
+			if(model.phaseIs(AuthState.IDLE.toString())){
+				System.out.println("idle: in_security port has something");
+				Double securityLevel = Double.parseDouble(val.toString());
+
+				System.out.println("idle: about to check security levels");
+				if (securityLevel == 3) {
 					nextState = AuthState.GET_CERTIFICATE.toString();
 
 				} else if (recvId != null && initId != null && 
 						   !recvId.equals("") && !initId.equals("")) {
-					if (securityLevel == 2) {
-						nextState = AuthState.AUTHENTICATE_USER.toString();
+					System.out.println("checking security level");
+					if (securityLevel == 1) {
+						nextState = AuthState.ENCRYPT_KDC_SESSION_REQUEST.toString();
 						SetInitId(initId);
 						SetRecvId(recvId);
 						SetSymmSize(size);
-					} else if (securityLevel == 3) {
-						nextState = AuthState.ENCRYPT_KDC_SESSION_REQUEST.toString();
+					} else if (securityLevel == 2) {
+						nextState = AuthState.AUTHENTICATE_USER.toString();
 						SetInitId(initId);
 						SetRecvId(recvId);
 						SetSymmSize(size);
@@ -660,5 +682,4 @@ public class AuthenticationManager extends ViewableAtomic
 			return nextState;
 		}
 	}
-
 }

@@ -38,8 +38,8 @@ public class AuthenticationServer extends ViewableAtomic
 		addInport("in_type");
 		addOutport("out_payloadSize");
 
-		addTestInput("in_type", new entity(ServerRequestType.KDC_SESSION.toString()));
-		addTestInput("in_type", new entity(ServerRequestType.CERTIFICATE.toString()));
+//		addTestInput("in_type", new entity(ServerRequestType.KDC_SESSION.toString()));
+//		addTestInput("in_type", new entity(ServerRequestType.CERTIFICATE.toString()));
 		
 		m_certPayloadSize = certificateSize;
 		m_sessionPayloadSize = sessionKeySize;
