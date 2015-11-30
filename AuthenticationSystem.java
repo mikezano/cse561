@@ -4,9 +4,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 
 import GenCol.entity;
-import model.modeling.message;
 import view.modeling.ViewableAtomic;
-import view.modeling.ViewableComponent;
 import view.modeling.ViewableDigraph;
 
 public class AuthenticationSystem extends ViewableDigraph {
@@ -28,11 +26,10 @@ public class AuthenticationSystem extends ViewableDigraph {
 	private static final String m_asymmCryptoName = "Asymmetric Crypto Engine";
 	private static final String m_hashName = "Hash Engine";
 	private static final String m_appName = "Generator";
+	private static final String m_xducerName = "Transducer";
 	
 	private void CoupledModelConstruct() {
 		addInport("in_start");
-//		addInport("in_initId");
-//		addInport("in_recvId");
 		addOutport("out_msg");
 
 		//Instantiate all components required.
@@ -45,7 +42,7 @@ public class AuthenticationSystem extends ViewableDigraph {
 		ViewableAtomic asymmCrypto = new AsymmetricEncryption(m_asymmCryptoName);
 		ViewableAtomic hashEngine = new Hash(m_hashName);
 		ViewableAtomic app = new Application(m_appName);
-		//Transducer t = new Transducer();
+		ViewableAtomic xducer = new Transducer(m_xducerName);
 	
 		//Add them to the model.
 		add(authMngr);
@@ -55,21 +52,15 @@ public class AuthenticationSystem extends ViewableDigraph {
 		add(hashEngine);
 		add(authServer);
 		add(app);
-		//add(t);
+		add(xducer);
 		
 		initialize();
 		
 		addTestInput("in_start", new entity("1"));
 		addTestInput("in_start", new entity("2"));
 		addTestInput("in_start", new entity("3"));
-		/*
-		addTestInput("in_initId", new entity("Source ID"));
-		addTestInput("in_recvId", new entity("Destination ID"));
-		addTestInput("in_secLvl", new entity("1"));
-		addTestInput("in_secLvl", new entity("2"));
-		addTestInput("in_secLvl", new entity("3"));
-		*/		
 
+		//Glue the different components.
 		addCoupling(this, "in_start", app, "in_start");
 		
 		addCoupling(app,"out_securityLevel", authMngr, "in_security");
@@ -88,6 +79,11 @@ public class AuthenticationSystem extends ViewableDigraph {
 		addCoupling(authMngr, "out_authType", authFactorMngr, "in_authType");
 		addCoupling(authMngr, "out_srvReq", authServer, "in_type");
 		
+		addCoupling(symmCrypto, "out_power", xducer, "in_sePower");
+		addCoupling(asymmCrypto, "out_power", xducer, "in_aePower");
+		addCoupling(hashEngine, "out_power", xducer, "in_hPower");
+		addCoupling(authFactorMngr, "out_power", xducer, "in_afPower");
+		
 		asymmCrypto.setPreferredLocation(new Point(267, 50));
 		authFactorMngr.setPreferredLocation(new Point(600, 50));
 		hashEngine.setPreferredLocation(new Point(900, 50));
@@ -95,6 +91,7 @@ public class AuthenticationSystem extends ViewableDigraph {
 		authServer.setPreferredLocation(new Point(750, 400));
 		authMngr.setPreferredLocation(new Point(275, 200));
 		app.setPreferredLocation(new Point(15, 200));
+		xducer.setPreferredLocation(new Point(1100, 400));
 		
 		//Transducer
 		/*
@@ -114,6 +111,6 @@ public class AuthenticationSystem extends ViewableDigraph {
 	
     public void layoutForSimView()
     {
-        preferredSize = new Dimension(1200, 600);
+        preferredSize = new Dimension(1400, 600);
     }
 }

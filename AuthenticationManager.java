@@ -111,16 +111,6 @@ public class AuthenticationManager extends ViewableAtomic
 		m_nextState = null;
 		phase = AuthState.IDLE.toString();
 		sigma = 1/0.0;
-		/*
-		addTestInput("in_security", new entity("1"));
-		addTestInput("in_security", new entity("2"));
-		addTestInput("in_security", new entity("3"));
-		addTestInput("in_srvPayloadSize", new entity("50"));
-		addTestInput("in_authResult", new entity(AuthenticationPass));
-		addTestInput("in_authResult", new entity(AuthenticationFail));
-		addTestInput("in_symmSize", new entity("50"));
-		addTestInput("in_asymmSize", new entity("50"));
-		addTestInput("in_hashSize", new entity("50"));*/
 	}
 	
 	public void initialize()
@@ -646,12 +636,13 @@ public class AuthenticationManager extends ViewableAtomic
 				}
 				
 				if (model.messageOnPort(x, "in_security", idx)) {
-					val = x.getValOnPort("in_security",0);
+					val = x.getValOnPort("in_security",idx);
 				}
 			}
 			
 			//If no security level is received, return;
 			if (val == null) {
+				System.out.println("No security level detected");
 				return nextState;
 			}
 
