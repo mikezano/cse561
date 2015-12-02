@@ -30,10 +30,8 @@ public class AuthenticationSystem extends ViewableDigraph {
 	
 	private void CoupledModelConstruct() {
 		addInport("in_start");
-		addOutport("out_msg");
 
-		//Instantiate all components required.
-		
+		//Instantiate all components required.		
 		AuthenticationManager authMngr = new AuthenticationManager(m_authMgrName);
 		
 		ViewableAtomic authFactorMngr = new AuthenticationFactorManager(m_authFactorMgrName);
@@ -92,17 +90,7 @@ public class AuthenticationSystem extends ViewableDigraph {
 		authMngr.setPreferredLocation(new Point(275, 200));
 		app.setPreferredLocation(new Point(15, 200));
 		xducer.setPreferredLocation(new Point(1100, 400));
-		
-		//Transducer
-		/*
-		addCoupling(authMngr, "out", t, "arriveAM");
-		addCoupling(authFactorMngr, "out", t, "arriveAFM");
-		addCoupling(symmCrypto, "out", t, "arriveSE");
-		addCoupling(asymmCrypto, "out", t, "arriveAE");
-		*/
 	}
-	
-
 	
 	public void initialize()
 	{

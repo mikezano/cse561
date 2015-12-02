@@ -28,13 +28,6 @@ public class AuthenticationManager extends ViewableAtomic
 	private int m_hashSize;
 	private String m_authResult;
 	private int m_srvPayloadSize;
-
-	/*private Double m_outPower;
-	private int m_outHashSize;
-	private int m_outSymmSize;
-	private int m_outAsymmSize;
-	private ServerRequestType m_outSrvReq;
-	*/
 	
 	protected void SetInitId(String id) { m_initId = id; }
 	protected String GetInitId() { return m_initId; }
@@ -60,24 +53,6 @@ public class AuthenticationManager extends ViewableAtomic
 	protected void SetSrvPayloadSize(int size) { m_srvPayloadSize = size; }
 	protected int GetSrvPayloadSize() { return m_srvPayloadSize; }
 	
-	/*
-	protected void SetOutPower(Double mw) { m_outPower = mw; }
-	protected void AddOutPower(Double mw) { m_outPower += mw; }
-	protected Double GetOutPower() { return m_outPower;}
-	
-	protected void SetOutHashSize(int size) { m_outHashSize = size; }
-	protected int GetOutHashSize() { return m_outHashSize; }
-	
-	protected void SetOutSymmSize(int size) { m_outSymmSize = size; }
-	protected int GetOutSymmSize() { return m_outSymmSize; }
-
-	protected void SetOutAsymmSize(int size) { m_outAsymmSize = size; }
-	protected int GetOutAsymmSize() { return m_outAsymmSize; }
-	
-	protected void SetOutSrvReq(ServerRequestType req) { m_outSrvReq = req; }
-	protected ServerRequestType GetOutSrvReq() { return m_outSrvReq; }
-	*/
-	
 	public AuthenticationManager(){
 		super("Authentication Manager");
 		SetupModel();
@@ -100,7 +75,6 @@ public class AuthenticationManager extends ViewableAtomic
 		addInport("in_initId");
 		addInport("in_recvId");
 
-		addOutport("out_power");	//AR: Do we need this in the authentication manager?
 		addOutport("out_hashSize");
 		addOutport("out_symmSize");
 		addOutport("out_asymmSize");
@@ -118,7 +92,7 @@ public class AuthenticationManager extends ViewableAtomic
 		super.initialize();
 	}
 	
-	public void deltext(double e,message x)
+	public void deltext(double e, message x)
 	{
 		System.out.println("deltext");
 		for (int idx = 0; idx < states.length; idx++) {
