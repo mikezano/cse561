@@ -7,10 +7,7 @@ import view.modeling.ViewableAtomic;
 
 public class AsyncCoord extends ViewableAtomic 
 {
-	
 	//Private variables.
-	private CryptoEngineType m_engineType = DefaultEngineType;
-	private double m_mwPerByte;
 	private double m_delay = 0.1;	//0.1 for simplicity sake. Future work can expand to get more specific behavior and measurements.
 	private Integer m_currentPayload = 0;
 	
@@ -38,12 +35,6 @@ public class AsyncCoord extends ViewableAtomic
 		m_currentPayload = 0;
 		
 		phase = "Passive";
-		
-		addInport("in_payloadSize");
-		addOutport("out_power");
-		addOutport("out_size");
-		
-		addTestInput("in_payloadSize", new entity("100"));
 	}
 
 	//Getter for default milliwatts per byte based on engine type.
