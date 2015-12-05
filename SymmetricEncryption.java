@@ -12,8 +12,8 @@ public class SymmetricEncryption extends GenericCryptoEngine {
 		super(name, CryptoEngineType.SYMMETRIC, MilliWattsPerByte);
 	}
 	
-	public SymmetricEncryption(String name, double mwPerByte){
-		super(name, CryptoEngineType.SYMMETRIC, mwPerByte);
+	public SymmetricEncryption(String name, double mjPerByte){
+		super(name, CryptoEngineType.SYMMETRIC, mjPerByte);
 	}
 	
 	public void initialize()

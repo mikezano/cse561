@@ -8,13 +8,13 @@ public class GenericCryptoEngine extends ViewableAtomic {
 	
 	//Public variables.
 	public static final CryptoEngineType DefaultEngineType = CryptoEngineType.SYMMETRIC;
-	public static final double DefaultHashMilliWattsPerByte = 0.1;
-	public static final double DefaultSymmMilliWattsPerByte = 0.2;
-	public static final double DefaultAsymmMilliWattsPerByte = 0.2;
+	public static final double DefaultHashMilliJoulesPerByte = 0.1;
+	public static final double DefaultSymmMilliJoulesPerByte = 0.2;
+	public static final double DefaultAsymmMilliJoulesPerByte = 0.2;
 	
 	//Private variables.
 	private CryptoEngineType m_engineType = DefaultEngineType;
-	private double m_mwPerByte;
+	private double m_mjPerByte;
 	private double m_delay = 0.1;	//0.1 for simplicity sake. Future work can expand to get more specific behavior and measurements.
 	private Integer m_currentPayload = 0;
 	
@@ -23,16 +23,23 @@ public class GenericCryptoEngine extends ViewableAtomic {
 	{
 		super("Generic Crypto Engine");
 		
-		m_mwPerByte = GetDefaultMwPerByte(DefaultEngineType);
+		m_mjPerByte = GetDefaultMjPerByte(DefaultEngineType);
 		SetupModel(DefaultEngineType);
 	}
 	
-	//Parameterized constructor.
-	public GenericCryptoEngine(String name, CryptoEngineType type, double mwPerByte) 
+	/*
+	 * This routine sets up the model according to the parameters passed.
+	 * 
+	 * @param type indicates the crypto engine type according to CryptoEngineType enumeration.
+	 * @param mjPerByte indicates the milli Joules per byte to associate with this crypto block. 
+	 * 
+	 * return N/A
+	 */
+	public GenericCryptoEngine(String name, CryptoEngineType type, double mjPerByte) 
 	{
 		super(name);
 		
-		m_mwPerByte = mwPerByte;
+		m_mjPerByte = mjPerByte;
 		SetupModel(type);
 	}
 
@@ -40,7 +47,6 @@ public class GenericCryptoEngine extends ViewableAtomic {
 	 * This routine sets up the model according to the parameters passed.
 	 * 
 	 * @param type indicates the crypto engine type according to CryptoEngineType enumeration.
-	 * @param mwPerByte indicates the milliwatts per byte to associate with this crypto block. 
 	 * 
 	 * return N/A
 	 */
@@ -58,16 +64,16 @@ public class GenericCryptoEngine extends ViewableAtomic {
 		addTestInput("in_payloadSize", new entity("100"));
 	}
 
-	//Getter for default milliwatts per byte based on engine type.
-	private double GetDefaultMwPerByte(CryptoEngineType type) 
+	//Getter for default milli Joules per byte based on engine type.
+	private double GetDefaultMjPerByte(CryptoEngineType type) 
 	{
 		switch (type) {
 			case HASH: 
-				return DefaultHashMilliWattsPerByte;
+				return DefaultHashMilliJoulesPerByte;
 			case ASYMMETRIC:
-				return DefaultAsymmMilliWattsPerByte;
+				return DefaultAsymmMilliJoulesPerByte;
 			case SYMMETRIC:
-				return DefaultSymmMilliWattsPerByte;
+				return DefaultSymmMilliJoulesPerByte;
 		}
 		
 		return 0;
@@ -93,7 +99,7 @@ public class GenericCryptoEngine extends ViewableAtomic {
 	
 	public message out( )
 	{
-		Double powerConsumed = m_currentPayload * m_mwPerByte;
+		Double powerConsumed = m_currentPayload * m_mjPerByte;
 		
 		message m = new message();
 

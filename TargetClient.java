@@ -30,10 +30,6 @@ public class TargetClient extends ViewableAtomic {
 		if(messageOnPort(x,"in1",0) ){
 			
 			currentVal = x.getValOnPort("In1",0);
-			//can check for input value (i.e., input event = 1M)
-			//phase = "WAIT";
-			//duration = 1;//storing for later what the duration of the light switch is
-			//sigma = waitTime;
 			holdIn("active", 1);
 		}
 	}
