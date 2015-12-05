@@ -83,14 +83,14 @@ public class AuthenticationSystem extends ViewableDigraph {
 		addCoupling(hashEngine, "out_power", xducer, "in_hPower");
 		addCoupling(authFactorMngr, "out_power", xducer, "in_afPower");
 		
-		asymmCrypto.setPreferredLocation(new Point(267, 50));
-		authFactorMngr.setPreferredLocation(new Point(600, 50));
-		hashEngine.setPreferredLocation(new Point(900, 50));
-		symmCrypto.setPreferredLocation(new Point(350, 400));
-		authServer.setPreferredLocation(new Point(750, 400));
-		authMngr.setPreferredLocation(new Point(275, 200));
-		app.setPreferredLocation(new Point(15, 200));
-		xducer.setPreferredLocation(new Point(1100, 400));
+		asymmCrypto.setPreferredLocation(new Point(100, 50));
+		authFactorMngr.setPreferredLocation(new Point(1000, 250));
+		hashEngine.setPreferredLocation(new Point(1400, 250));
+		symmCrypto.setPreferredLocation(new Point(350, 600));
+		authServer.setPreferredLocation(new Point(750, 600));
+		authMngr.setPreferredLocation(new Point(275, 400));
+		app.setPreferredLocation(new Point(15, 400));
+		xducer.setPreferredLocation(new Point(1100, 600));
 	}
 	
 	public void initialize()
@@ -100,6 +100,6 @@ public class AuthenticationSystem extends ViewableDigraph {
 	
     public void layoutForSimView()
     {
-        preferredSize = new Dimension(1400, 600);
+        preferredSize = new Dimension(1800, 1000);
     }
 }

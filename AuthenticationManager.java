@@ -492,6 +492,8 @@ public class AuthenticationManager extends ViewableAtomic
 			//Get the size of content we need to encrypt from previous step.
 			Integer payload = GetAsymmSize();
 			content contentSizeToEncrypt = makeContent("out_asymmSize", new entity(payload.toString()));
+			content opType = makeContent("out_asymmOp", new entity(AsymmOpType.ENCRYPT.toString()));
+			m.add(opType);
 			m.add(contentSizeToEncrypt);
 			return m;
 		}
