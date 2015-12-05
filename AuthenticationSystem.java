@@ -37,7 +37,7 @@ public class AuthenticationSystem extends ViewableDigraph {
 		ViewableAtomic authFactorMngr = new AuthenticationFactorManager(m_authFactorMgrName);
 		ViewableAtomic authServer = new AuthenticationServer(m_authServerName);
 		ViewableAtomic symmCrypto = new SymmetricEncryption(m_symmCryptoName);
-		ViewableAtomic asymmCrypto = new AsymmetricEncryption(m_asymmCryptoName);
+		ViewableDigraph asymmCrypto = new AsymmetricEncryption(m_asymmCryptoName);
 		ViewableAtomic hashEngine = new Hash(m_hashName);
 		ViewableAtomic app = new Application(m_appName);
 		ViewableAtomic xducer = new Transducer(m_xducerName);
@@ -73,6 +73,7 @@ public class AuthenticationSystem extends ViewableDigraph {
 		
 		addCoupling(authMngr, "out_symmSize", symmCrypto, "in_payloadSize");
 		addCoupling(authMngr, "out_asymmSize", asymmCrypto, "in_payloadSize");
+		addCoupling(authMngr, "out_asymmOp", asymmCrypto, "in_opType");
 		addCoupling(authMngr, "out_hashSize", hashEngine, "in_payloadSize");
 		addCoupling(authMngr, "out_authType", authFactorMngr, "in_authType");
 		addCoupling(authMngr, "out_srvReq", authServer, "in_type");

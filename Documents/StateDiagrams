@@ -31,7 +31,7 @@ InitKdcSession: KdcSessionRequest
 InitKdcSession --> DecryptKdcSessionKey: \n  PayloadType:Tgt\n  PayloadSize
   
 
-DecryptKdcSessionKey: OutputSizeInBytes\nPlainTextPayload
+DecryptKdcSessionKey: OutputSizeInBytes\nEncryptedPayload
 DecryptKdcSessionKey --> EncryptRecipientSessionRequest: Tgt\nKdcSessionKey
 
 EncryptRecipientSessionRequest: Payload

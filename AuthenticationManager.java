@@ -75,6 +75,7 @@ public class AuthenticationManager extends ViewableAtomic
 		addInport("in_initId");
 		addInport("in_recvId");
 
+		addOutport("out_asymmOp");
 		addOutport("out_hashSize");
 		addOutport("out_symmSize");
 		addOutport("out_asymmSize");
@@ -277,6 +278,8 @@ public class AuthenticationManager extends ViewableAtomic
 			message m = new message();
 			Integer size = GetSymmSize();
 			content payload = makeContent("out_symmSize", new entity(size.toString()));
+			content opType = makeContent("out_asymmOp", new entity(AsymmOpType.ENCRYPT.toString()));
+			m.add(opType);
 			m.add(payload);
 			return m;
 		}
@@ -427,6 +430,8 @@ public class AuthenticationManager extends ViewableAtomic
 			//Get the size of content we need to encrypt from previous step.
 			Integer payload = GetAsymmSize();
 			content contentSizeToEncrypt = makeContent("out_asymmSize", new entity(payload.toString()));
+			content opType = makeContent("out_asymmOp", new entity(AsymmOpType.ENCRYPT.toString()));
+			m.add(opType);
 			m.add(contentSizeToEncrypt);
 			return m;
 		}
@@ -547,7 +552,9 @@ public class AuthenticationManager extends ViewableAtomic
 			//Get the payload received from the server, which is the certificate and feed as output to the crypto block for decryption.
 			Integer payload = GetSrvPayloadSize();
 			content encryptedCert = makeContent("out_asymmSize", new entity(payload.toString()));
+			content opType = makeContent("out_asymmOp", new entity(AsymmOpType.DECRYPT.toString()));
 			m.add(encryptedCert);
+			m.add(opType);
 			return m;
 		}
 	}
