@@ -43,9 +43,9 @@ public class AuthenticationSystem extends ViewableDigraph {
 	 * case 3	AES128			RSA1024				RSA1024				SHA1
 	 */
 	public static final double[][] TestCases = {
-													{1.62, 1.141, 2.2545, 5.9},
-													{1.62, 3.077, 6.099,  5.9},
-													{1.62, 15.2,  0.595,  5.9}
+													{1.62, 1.141, 2.2545, 0.0059},
+													{1.62, 3.077, 6.099,  0.0059},
+													{1.62, 15.2,  0.595,  0.0059}
 												};
 
 	public static final int SYMM = 0;
@@ -62,7 +62,7 @@ public class AuthenticationSystem extends ViewableDigraph {
 		addInport("in_start");
 
 		//Instantiate all components required.		
-		AuthenticationManager authMngr = new AuthenticationManager(m_authMgrName, 4096);
+		AuthenticationManager authMngr = new AuthenticationManager(m_authMgrName, 0);
 		ViewableAtomic authFactorMngr = new AuthenticationFactorManager(m_authFactorMgrName);
 		ViewableAtomic authServer = new AuthenticationServer(m_authServerName);
 		ViewableAtomic symmCrypto = new SymmetricEncryption(m_symmCryptoName, TestCases[testCaseIdx][SYMM]);
