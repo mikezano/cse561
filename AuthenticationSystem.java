@@ -62,7 +62,7 @@ public class AuthenticationSystem extends ViewableDigraph {
 		addInport("in_start");
 
 		//Instantiate all components required.		
-		AuthenticationManager authMngr = new AuthenticationManager(m_authMgrName, 0);
+		AuthenticationManager authMngr = new AuthenticationManager(m_authMgrName, 4096);
 		ViewableAtomic authFactorMngr = new AuthenticationFactorManager(m_authFactorMgrName);
 		ViewableAtomic authServer = new AuthenticationServer(m_authServerName);
 		ViewableAtomic symmCrypto = new SymmetricEncryption(m_symmCryptoName, TestCases[testCaseIdx][SYMM]);

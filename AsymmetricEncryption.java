@@ -52,8 +52,8 @@ public class AsymmetricEncryption extends ViewableDigraph
 		addOutport("out_size");
 
 		//Instantiate encryption and decryption engine blocks.
-		m_decryptEngine = new GenericCryptoEngine("DecryptEngine", CryptoEngineType.ASYMMETRIC, encryptMj);
-		m_encryptEngine = new GenericCryptoEngine("EncryptEngine", CryptoEngineType.ASYMMETRIC, decryptMj);
+		m_decryptEngine = new GenericCryptoEngine("DecryptEngine", CryptoEngineType.ASYMMETRIC, decryptMj);
+		m_encryptEngine = new GenericCryptoEngine("EncryptEngine", CryptoEngineType.ASYMMETRIC, encryptMj);
 		m_coordinator = new AsymmCoord("Coordinator");
 		
 		//Add them to model.
