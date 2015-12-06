@@ -104,7 +104,13 @@ public class GenericCryptoEngine extends ViewableAtomic {
 		message m = new message();
 
 		content power = makeContent("out_power", new entity(powerConsumed.toString()));
-		content size = makeContent("out_size", new entity(m_currentPayload.toString()));
+		content size;
+		
+		if (m_engineType == CryptoEngineType.HASH) {
+			size = makeContent("out_size", new entity("20")); //Hash1 always outputs 20 bytes.
+		} else {
+			size = makeContent("out_size", new entity(m_currentPayload.toString()));
+		}
 		
 		m.add(power);
 		m.add(size);

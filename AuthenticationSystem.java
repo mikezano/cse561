@@ -28,17 +28,39 @@ public class AuthenticationSystem extends ViewableDigraph {
 	private static final String m_appName = "Generator";
 	private static final String m_xducerName = "Transducer";
 	
-	private void CoupledModelConstruct() {
+	/*			AES128		ECDSA160 Encrypt	ECDSA160 Decrypt		ECDSA224 Encrypt		ECDSA224 Decrypt		RSA1024 Encrypt		RSA1024 Decrypt		SHA1
+	 * 			1.62		1.141				2.2545					3.077					6.099					15.2				0.595				5.9
+	 * 
+	 * 			Symm Crypto		Asymm Encrypt		Asymm Decrypt		Hash
+	 * case 1	AES128			ECDSA160			ECDSA160			SHA1
+	 * case 2	AES128			ECDSA224			ECDSA224			SHA1
+	 * case 3	AES128			RSA1024				RSA1024				SHA1
+	 */
+	public static final double[][] TestCases = {
+													{1.62, 1.141, 2.2545, 5.9},
+													{1.62, 3.077, 6.099,  5.9},
+													{1.62, 15.2,  0.595,  5.9}
+												};
+
+	public static final int SYMM = 0;
+	public static final int ASYMM_ENCRYPT = 1;
+	public static final int ASYMM_DECRYPT = 2;
+	public static final int HASH = 3;
+
+	private void CoupledModelConstruct() 
+	{
+		int testCaseIdx = 2;	//case 1 - 3
+		
 		addInport("in_start");
 
 		//Instantiate all components required.		
-		AuthenticationManager authMngr = new AuthenticationManager(m_authMgrName);
+		AuthenticationManager authMngr = new AuthenticationManager(m_authMgrName, 4096);
 		
 		ViewableAtomic authFactorMngr = new AuthenticationFactorManager(m_authFactorMgrName);
 		ViewableAtomic authServer = new AuthenticationServer(m_authServerName);
-		ViewableAtomic symmCrypto = new SymmetricEncryption(m_symmCryptoName);
-		ViewableDigraph asymmCrypto = new AsymmetricEncryption(m_asymmCryptoName);
-		ViewableAtomic hashEngine = new Hash(m_hashName);
+		ViewableAtomic symmCrypto = new SymmetricEncryption(m_symmCryptoName, TestCases[testCaseIdx][SYMM]);
+		ViewableDigraph asymmCrypto = new AsymmetricEncryption(m_asymmCryptoName, TestCases[testCaseIdx][ASYMM_ENCRYPT], TestCases[testCaseIdx][ASYMM_DECRYPT]);
+		ViewableAtomic hashEngine = new Hash(m_hashName, TestCases[testCaseIdx][HASH]);
 		ViewableAtomic app = new Application(m_appName);
 		ViewableAtomic xducer = new Transducer(m_xducerName);
 	

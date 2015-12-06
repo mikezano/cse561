@@ -19,15 +19,16 @@ public class AuthenticationManager extends ViewableAtomic
 	
 	private double waitTime = 0.1;
 
-	private boolean m_authenticated;
-	private String m_initId;
-	private String m_recvId;
-	private int m_securityLevel;
-	private int m_symmSize;
-	private int m_asymmSize;
-	private int m_hashSize;
-	private String m_authResult;
-	private int m_srvPayloadSize;
+	private boolean m_authenticated = false;
+	private String m_initId = null;
+	private String m_recvId = null;
+	private int m_securityLevel = 0;
+	private int m_symmSize = 0;
+	private int m_asymmSize = 0;
+	private int m_hashSize = 0;
+	private String m_authResult = null;
+	private int m_srvPayloadSize = 0;
+	private int m_recvPayloadSize = 0;
 	
 	protected void SetInitId(String id) { m_initId = id; }
 	protected String GetInitId() { return m_initId; }
@@ -43,6 +44,9 @@ public class AuthenticationManager extends ViewableAtomic
 	
 	protected void SetAsymmSize(int size) { m_asymmSize = size; }
 	protected int GetAsymmSize() { return m_asymmSize; }
+	
+	protected void SetRecvPayloadSize(int size) {m_recvPayloadSize = size;}
+	protected int GetRecvPayloadSize() { return m_recvPayloadSize;}
 	
 	protected void SetHashSize(int size) { m_hashSize = size; }
 	protected int GetHashSize() { return m_hashSize; }
@@ -63,6 +67,14 @@ public class AuthenticationManager extends ViewableAtomic
 		super(name);
 		SetupModel();
 	}
+	
+	public AuthenticationManager(String name, int recvPayload) 
+	{
+		super(name);
+		SetupModel();
+		SetRecvPayloadSize(recvPayload);
+	}
+	
 	
 	private void SetupModel()
 	{
@@ -194,6 +206,9 @@ public class AuthenticationManager extends ViewableAtomic
 		public message GetStateMessageOutput() {
 			message m = new message();
 			Integer size = GetSrvPayloadSize();
+			if (GetRecvPayloadSize() > 0) {
+				size += GetRecvPayloadSize();
+			}
 			content payload = makeContent("out_symmSize", new entity(size.toString()));
 			m.add(payload);
 			return m;
@@ -491,6 +506,9 @@ public class AuthenticationManager extends ViewableAtomic
 			message m = new message();
 			//Get the size of content we need to encrypt from previous step.
 			Integer payload = GetAsymmSize();
+			if (GetRecvPayloadSize() > 0) {
+				payload += GetRecvPayloadSize();
+			}
 			content contentSizeToEncrypt = makeContent("out_asymmSize", new entity(payload.toString()));
 			content opType = makeContent("out_asymmOp", new entity(AsymmOpType.ENCRYPT.toString()));
 			m.add(opType);
@@ -510,7 +528,7 @@ public class AuthenticationManager extends ViewableAtomic
 				Integer payload = Integer.parseInt(val.toString());
 				if (payload != 0) {
 					nextState = AuthState.ENCRYPT_ASYMM_RECEIVER_REQUEST.toString();
-					model.SetAsymmSize(payload);
+					model.SetHashSize(payload);
 				}
 			}
 			return nextState;
