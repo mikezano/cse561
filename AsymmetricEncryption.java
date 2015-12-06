@@ -6,6 +6,11 @@ import java.awt.Point;
 import view.modeling.ViewableAtomic;
 import view.modeling.ViewableDigraph;
 
+/*
+ * This model serves to behave as an asymmetric encryption/decryption block.
+ * This is a composite model where it instantiates a decryption block, an encryption block
+ * and a coordinator to manage which cipher block to use.
+ */
 public class AsymmetricEncryption extends ViewableDigraph 
 {
 	private ViewableAtomic m_decryptEngine;
@@ -28,6 +33,9 @@ public class AsymmetricEncryption extends ViewableDigraph
 		SetupModel(DefEncryptMjPerByte, DefDecryptMjPerByte);
 	}
 	
+	/*
+	 * Parameterized constructor to allow user to specify the decryption and encryption milli-Joules per byte required.
+	 */
 	public AsymmetricEncryption(String name, double encryptMj, double decryptMj)
 	{
 		super(name);
@@ -55,6 +63,7 @@ public class AsymmetricEncryption extends ViewableDigraph
 		
 		initialize();
 
+		//Wire blocks.
 		addCoupling(this,"in_payloadSize", m_coordinator, "in_payloadSize");
 		addCoupling(this,"in_opType", m_coordinator, "in_opType");
 		
@@ -65,7 +74,6 @@ public class AsymmetricEncryption extends ViewableDigraph
 		addCoupling(m_decryptEngine, "out_power", this, "out_power");
 		addCoupling(m_encryptEngine, "out_size", this, "out_size");
 		addCoupling(m_decryptEngine, "out_size", this, "out_size");
-		
 		
 		//Set layout.
 		m_coordinator.setPreferredLocation(new Point(0, 50));

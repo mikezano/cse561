@@ -5,6 +5,14 @@ import model.modeling.content;
 import model.modeling.message;
 import view.modeling.ViewableAtomic;
 
+/*
+ * This class serves as a coordinator to work with two crypto ciphers corresponding to 
+ * asymmetric encryption and decryption. This block will take inputs from a user and
+ * depending on whether it requires encryption or decryption, it'll stimulate the respective
+ * block to perform such operation. The idea behind this component is to serve as a
+ * building block towards encapsulation to have eventually a single asymmetric encryption
+ * block where this model drives an encryption block and a decryption block.  
+ */
 public class AsymmCoord extends ViewableAtomic 
 {
 	//Private variables.
@@ -28,13 +36,14 @@ public class AsymmCoord extends ViewableAtomic
 
 	private void SetupModel()
 	{
+		//Add ports
 		addInport("in_payloadSize");
 		addInport("in_opType");
 		addOutport("out_encryptPayloadSize");
 		addOutport("out_decryptPayloadSize");
 		
+		//Initialize internal variables.
 		m_currentPayload = 0;
-		
 		m_type = AsymmOpType.ENCRYPT;
 		phase = "Passive";
 	}
@@ -47,6 +56,7 @@ public class AsymmCoord extends ViewableAtomic
 
 		//Get inputs.
 		for (int idx = 0; idx < x.size(); idx++) {
+			
 			//Get the payload size.
 			if(messageOnPort(x, "in_payloadSize", idx) && phaseIs("Passive")) {
 				entity val = x.getValOnPort("in_payloadSize", idx);
@@ -82,6 +92,7 @@ public class AsymmCoord extends ViewableAtomic
 		message m = new message();
 		content payload;
 
+		//Only forward the output to start encrypting/decrypting if payload is valid.
 		if (m_currentPayload > 0) {
 
 			if(m_type == AsymmOpType.ENCRYPT) {

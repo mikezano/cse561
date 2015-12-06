@@ -1,11 +1,6 @@
 package cse561;
 
-import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.Map;
-import GenCol.doubleEnt;
 import GenCol.entity;
-import model.modeling.content;
 import model.modeling.message;
 import view.modeling.ViewableAtomic;
 
@@ -17,29 +12,16 @@ public class Transducer extends  ViewableAtomic
 	private double m_totalHashPower;
 	private double m_totalAuthFactorPower;
 
-	public Transducer() {
+	public Transducer() 
+	{
 		super("Transducer");
 		
 		TransducerSetup();
 	}	
 	
-	public Transducer(String  name) {
+	public Transducer(String  name) 
+	{
 		super(name);
-		/*
-		addInport("GenOut");
-		addInport("arriveAM");
-		addInport("arriveSE");
-		addInport("arriveAE");
-		addInport("arriveHE");
-		addInport("arriveKS");
-		addInport("arriveCA");
-		addInport("solvedAM");
-		addInport("solvedSE");
-		addInport("solvedAE");
-		addInport("solvedHE");
-		addInport("solvedKS");
-		addInport("solvedCA");		
-*/
 		TransducerSetup();
 	}
 	

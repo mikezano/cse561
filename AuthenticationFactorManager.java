@@ -4,7 +4,10 @@ import model.modeling.content;
 import model.modeling.message;
 import view.modeling.ViewableAtomic;
 
-
+/*
+ * This block mimics an authentication factor such as a pin process to authenticate user or 
+ * fingerprint or facial-scanning scheme, etc. 
+ */
 public class AuthenticationFactorManager extends ViewableAtomic 
 {
 	private static final Double m_facialPowerRequired = 5.0;
@@ -27,27 +30,33 @@ public class AuthenticationFactorManager extends ViewableAtomic
 	
 	private void SetupModel()
 	{
+		//Add ports.
 		addInport("in_authType");
 		addOutport("out_power");
 		addOutport("out_authResult");
 
+		//Add test inputs.
 		addTestInput("in_authType", new entity(AuthenticationFactorType.FACIAL.toString()));
 		addTestInput("in_authType", new entity(AuthenticationFactorType.IRIS.toString()));
 		addTestInput("in_authType", new entity(AuthenticationFactorType.FINGERPRINT.toString()));
 		
+		//Initialize privates and variables.
 		phase = "Passive";
 		m_delay = 0.1;
 		m_reqType = AuthenticationFactorType.NONE;
 	}
 	
-	public void initialize(){
+	public void initialize()
+	{
 		super.initialize();
 	}
 	
-	public void deltext(double e, message x){
+	public void deltext(double e, message x)
+	{
 		Continue(e);
 
-		if(messageOnPort(x, "in_authType", 0) && phaseIs("Passive")){
+		//Check for inputs only if we're in the passive state.
+		if(messageOnPort(x, "in_authType", 0) && phaseIs("Passive")) {
 			entity val = x.getValOnPort("in_authType",0);
 
 			if (val.toString().equals(AuthenticationFactorType.FACIAL.toString())) {
@@ -93,6 +102,7 @@ public class AuthenticationFactorManager extends ViewableAtomic
 				break;
 		}
 		
+		//Generate output.
 		content powerUsed = makeContent("out_power", new entity(power.toString()));
 		content result = makeContent("out_authResult", new entity("Pass"));
 		m.add(powerUsed);

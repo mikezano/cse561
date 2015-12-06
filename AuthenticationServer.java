@@ -5,7 +5,10 @@ import model.modeling.content;
 import model.modeling.message;
 import view.modeling.ViewableAtomic;
 
-
+/*
+ * This models the authentication server which could be the Kerberos Distribution Center
+ * or the Public Key Infrastructure's CA.
+ */
 public class AuthenticationServer extends ViewableAtomic 
 {
 	public static final int DefaultCertificateSize = 1024;
@@ -50,6 +53,7 @@ public class AuthenticationServer extends ViewableAtomic
 	{
 		Continue(e);
 
+		//Check whether it's a KDC session request or a certificate request.
 		if(messageOnPort(x, "in_type",0) && phaseIs("Passive")){
 			entity val = x.getValOnPort("in_type",0);
 

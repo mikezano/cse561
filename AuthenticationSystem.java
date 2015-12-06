@@ -7,6 +7,9 @@ import GenCol.entity;
 import view.modeling.ViewableAtomic;
 import view.modeling.ViewableDigraph;
 
+/*
+ * This is the main class integrating the entire model components for our simulation needs.
+ */
 public class AuthenticationSystem extends ViewableDigraph {
 
 	public AuthenticationSystem(){
@@ -28,7 +31,10 @@ public class AuthenticationSystem extends ViewableDigraph {
 	private static final String m_appName = "Generator";
 	private static final String m_xducerName = "Transducer";
 	
-	/*			AES128		ECDSA160 Encrypt	ECDSA160 Decrypt		ECDSA224 Encrypt		ECDSA224 Decrypt		RSA1024 Encrypt		RSA1024 Decrypt		SHA1
+	/*	These are potential component configurations. All measurements and data are based on the paper
+	 * "Energy Analysis of Public-Key Cryptography on Small Wireless Devices" by A. S. Wanter, N. Gura, H. Eberle, V. Gupta and S. C. Shantz.
+	 * 		
+	 * AES128		ECDSA160 Encrypt	ECDSA160 Decrypt		ECDSA224 Encrypt		ECDSA224 Decrypt		RSA1024 Encrypt		RSA1024 Decrypt		SHA1
 	 * 			1.62		1.141				2.2545					3.077					6.099					15.2				0.595				5.9
 	 * 
 	 * 			Symm Crypto		Asymm Encrypt		Asymm Decrypt		Hash
@@ -49,13 +55,14 @@ public class AuthenticationSystem extends ViewableDigraph {
 
 	private void CoupledModelConstruct() 
 	{
-		int testCaseIdx = 2;	//case 1 - 3
+		//We use case 3 (as documented above) as AES128 and RSA1024 are the most popular configurations. 
+		int testCaseIdx = 2;
 		
+		//Declare port to start the model.
 		addInport("in_start");
 
 		//Instantiate all components required.		
 		AuthenticationManager authMngr = new AuthenticationManager(m_authMgrName, 4096);
-		
 		ViewableAtomic authFactorMngr = new AuthenticationFactorManager(m_authFactorMgrName);
 		ViewableAtomic authServer = new AuthenticationServer(m_authServerName);
 		ViewableAtomic symmCrypto = new SymmetricEncryption(m_symmCryptoName, TestCases[testCaseIdx][SYMM]);
@@ -76,6 +83,7 @@ public class AuthenticationSystem extends ViewableDigraph {
 		
 		initialize();
 		
+		//Add test inputs to inject. These correspond to the security level of interest in this model.
 		addTestInput("in_start", new entity("1"));
 		addTestInput("in_start", new entity("2"));
 		addTestInput("in_start", new entity("3"));
@@ -105,6 +113,7 @@ public class AuthenticationSystem extends ViewableDigraph {
 		addCoupling(hashEngine, "out_power", xducer, "in_hPower");
 		addCoupling(authFactorMngr, "out_power", xducer, "in_afPower");
 		
+		//Make them look pretty on the canvas.
 		asymmCrypto.setPreferredLocation(new Point(100, 50));
 		authFactorMngr.setPreferredLocation(new Point(650, 400));
 		hashEngine.setPreferredLocation(new Point(650, 500));

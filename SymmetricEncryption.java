@@ -1,6 +1,10 @@
 package cse561;
 
-public class SymmetricEncryption extends GenericCryptoEngine {
+/*
+ * Symmetric encryption block.
+ */
+public class SymmetricEncryption extends GenericCryptoEngine 
+{
  
 	public static final double MilliWattsPerByte = 0.2;
 	
